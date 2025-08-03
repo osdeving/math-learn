@@ -1,3 +1,6 @@
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+
 export default function HomePage() {
     return (
         <main className="container mx-auto px-4 py-8">
@@ -8,6 +11,15 @@ export default function HomePage() {
                 <p className="text-xl text-gray-600 mb-8">
                     Plataforma Modular de Estudo de Matemática
                 </p>
+                
+                <div className="mb-8">
+                    <Button asChild>
+                        <Link href="/admin">
+                            🔧 Área Administrativa
+                        </Link>
+                    </Button>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div className="bg-white p-6 rounded-lg shadow-md border">
                         <h2 className="text-xl font-semibold mb-2">
