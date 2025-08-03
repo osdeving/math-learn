@@ -8,9 +8,35 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Em Desenvolvimento
+- Sistema de administração (RN3)
+- Interface pública para visualização (RN4)
 
--   Sistema de categorias (RN1)
--   API routes para CRUD básico
+## [0.2.0] - 2025-08-03
+
+### Adicionado
+- **Infraestrutura MongoDB completa**
+  - Conexão MongoDB com cache global
+  - Modelo Category com Mongoose
+  - Validações Zod para inputs
+  - Utilitários para API responses
+
+- **API Categories (RN1)**
+  - GET /api/categories (listagem com paginação)
+  - POST /api/categories (criação)
+  - GET /api/categories/[id] (busca por ID)
+  - PUT /api/categories/[id] (atualização)
+  - DELETE /api/categories/[id] (remoção)
+  - Geração automática de slugs
+  - Sistema de filtros e busca
+
+- **Testes e qualidade**
+  - Testes unitários para validações
+  - Testes de API (estrutura criada)
+  - Endpoint de health check
+
+### Referências técnicas
+- RN1: Sistema de categorias ✅
+- RNF4: Banco MongoDB ✅
 
 ## [0.1.0] - 2025-08-03
 
