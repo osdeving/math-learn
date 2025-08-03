@@ -1,24 +1,21 @@
 import { handleError, successResponse } from "@/lib/api-helpers";
 import dbConnect from "@/lib/mongodb";
-import {
-    categoryQuerySchema,
-    categorySchema,
-    generateSlug,
-} from "@/lib/validations/category";
-import Category from "@/models/Category";
+import { contentQuerySchema, theorySchema } from "@/lib/validations/content";
+import Theory from "@/models/Theory";
 import { NextRequest } from "next/server";
 
-// GET /api/categories - Lista todas as categorias (com filtros)
+// GET /api/theory - Lista teorias (com filtros)
 export async function GET(request: NextRequest) {
     try {
         await dbConnect();
 
         const { searchParams } = new URL(request.url);
-        const queryParams = categoryQuerySchema.parse({
+        const queryParams = contentQuerySchema.parse({
             page: searchParams.get("page") || "1",
             limit: searchParams.get("limit") || "10",
             search: searchParams.get("search") || undefined,
             published: searchParams.get("published") || undefined,
+            categoryId: searchParams.get("categoryId") || undefined,
         });
 
         // Construir filtros
@@ -28,32 +25,34 @@ export async function GET(request: NextRequest) {
             filters.isPublished = queryParams.published === "true";
         }
 
+        if (queryParams.categoryId) {
+            filters.categoryIds = queryParams.categoryId;
+        }
+
         if (queryParams.search) {
-            filters.$or = [
-                { name: { $regex: queryParams.search, $options: "i" } },
-                { description: { $regex: queryParams.search, $options: "i" } },
-            ];
+            filters.$text = { $search: queryParams.search };
         }
 
         // Executar query com paginação
         const skip = (queryParams.page - 1) * queryParams.limit;
-        const [categories, total] = await Promise.all([
-            Category.find(filters)
+        const [theories, total] = await Promise.all([
+            Theory.find(filters)
+                .populate("categoryIds", "name slug")
                 .sort({ createdAt: -1 })
                 .skip(skip)
                 .limit(queryParams.limit)
                 .lean(),
-            Category.countDocuments(filters),
+            Theory.countDocuments(filters),
         ]);
 
         const totalPages = Math.ceil(total / queryParams.limit);
 
         return successResponse({
-            categories,
+            theories,
             pagination: {
                 current: queryParams.page,
                 total: totalPages,
-                count: categories.length,
+                count: theories.length,
                 totalCount: total,
             },
         });
@@ -62,23 +61,21 @@ export async function GET(request: NextRequest) {
     }
 }
 
-// POST /api/categories - Criar nova categoria
+// POST /api/theory - Criar nova teoria
 export async function POST(request: NextRequest) {
     try {
         await dbConnect();
 
         const body = await request.json();
-        const validatedData = categorySchema.parse(body);
+        const validatedData = theorySchema.parse(body);
 
-        // Gerar slug se não fornecido
-        if (!validatedData.slug) {
-            validatedData.slug = generateSlug(validatedData.name);
-        }
+        const theory = new Theory(validatedData);
+        await theory.save();
 
-        const category = new Category(validatedData);
-        await category.save();
+        // Popular as categorias para retorno
+        await theory.populate("categoryIds", "name slug");
 
-        return successResponse(category, "Category created successfully", 201);
+        return successResponse(theory, "Theory created successfully", 201);
     } catch (error) {
         return handleError(error);
     }
