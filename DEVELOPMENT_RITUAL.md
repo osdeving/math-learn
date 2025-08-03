@@ -173,5 +173,11 @@ main (produção)
 
 ---
 
-**Status Atual:** Fase 2-3 ✅ Completo - Infraestrutura MongoDB e API Categories
-**Próximo Passo:** Fase 4 - Interface Admin para gerenciar categorias
+**Status Atual:** Fase 4 ✅ Completo - Interface Admin básica implementada
+**Próximo Passo:** Configurar MongoDB e testar fluxo completo, depois Fase 5 - Interface Pública
+
+### Pendências Críticas:
+1. 🔴 Configurar MongoDB (Atlas ou local) para testes reais
+2. 🟡 Criar página de edição de categoria
+3. 🟡 Implementar busca e filtros na listagem
+4. 🟡 Adicionar paginação funcional
