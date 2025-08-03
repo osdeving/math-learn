@@ -1,5 +1,3 @@
-"use client";
-
 import "katex/dist/katex.min.css";
 import { BlockMath, InlineMath } from "react-katex";
 import ReactMarkdown from "react-markdown";
@@ -18,10 +16,6 @@ export function MarkdownRenderer({
         // Converter blocos LaTeX para markdown code blocks
         .replace(/\$\$([\s\S]*?)\$\$/g, (match, latex) => {
             return `\n\n\`\`\`math\n${latex.trim()}\n\`\`\`\n\n`;
-        })
-        // Converter LaTeX inline para markdown inline code
-        .replace(/\$([^$\n]+)\$/g, (match, latex) => {
-            return `\`math:${latex.trim()}\``;
         });
 
     return (
@@ -34,26 +28,7 @@ export function MarkdownRenderer({
                         const match = /language-(\w+)/.exec(className || "");
                         const language = match ? match[1] : "";
 
-                        // LaTeX inline
-                        if (inline && textContent.startsWith("math:")) {
-                            const latex = textContent.replace("math:", "");
-                            try {
-                                return <InlineMath math={latex} />;
-                            } catch (error) {
-                                console.warn(
-                                    "Erro ao renderizar LaTeX inline:",
-                                    latex,
-                                    error
-                                );
-                                return (
-                                    <code className="bg-red-100 text-red-600 px-2 py-1 rounded">
-                                        {latex}
-                                    </code>
-                                );
-                            }
-                        }
-
-                        // LaTeX block
+                        // LaTeX block ($$...$$)
                         if (!inline && language === "math") {
                             try {
                                 return <BlockMath math={textContent} />;
@@ -71,8 +46,8 @@ export function MarkdownRenderer({
                             }
                         }
 
-                        // Código normal
-                        if (!inline && language) {
+                        // Código normal com syntax highlighting
+                        if (!inline && language && language !== "math") {
                             return (
                                 <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm">
                                     <code className={className} {...props}>
@@ -100,87 +75,128 @@ export function MarkdownRenderer({
                             </code>
                         );
                     },
-                    // Melhorar renderização de parágrafos
-                    p: ({ children }) => (
-                        <p className="mb-4 leading-relaxed">{children}</p>
-                    ),
-                    // Melhorar renderização de títulos
+                    // Processamento customizado de texto para capturar LaTeX inline
+                    text: ({ children }) => {
+                        if (typeof children !== "string") return children;
+
+                        // Dividir o texto em partes, separando LaTeX inline
+                        const parts = children.split(/(\$[^$\n]+\$)/g);
+
+                        return (
+                            <>
+                                {parts.map((part, index) => {
+                                    // Se a parte começa e termina com $, é LaTeX inline
+                                    if (
+                                        part.startsWith("$") &&
+                                        part.endsWith("$") &&
+                                        part.length > 2
+                                    ) {
+                                        const latex = part.slice(1, -1);
+                                        try {
+                                            return (
+                                                <InlineMath
+                                                    key={index}
+                                                    math={latex}
+                                                />
+                                            );
+                                        } catch (error) {
+                                            console.warn(
+                                                "Erro ao renderizar LaTeX inline:",
+                                                latex,
+                                                error
+                                            );
+                                            return (
+                                                <code
+                                                    key={index}
+                                                    className="bg-red-100 text-red-600 px-2 py-1 rounded"
+                                                >
+                                                    {latex}
+                                                </code>
+                                            );
+                                        }
+                                    }
+                                    // Caso contrário, retorna o texto normal
+                                    return part;
+                                })}
+                            </>
+                        );
+                    },
+                    // Headers com estilo customizado
                     h1: ({ children }) => (
-                        <h1 className="text-3xl font-bold mb-6 mt-8 text-gray-900">
+                        <h1 className="text-3xl font-bold text-gray-900 mb-6 border-b border-gray-200 pb-3">
                             {children}
                         </h1>
                     ),
                     h2: ({ children }) => (
-                        <h2 className="text-2xl font-semibold mb-4 mt-6 text-gray-800">
+                        <h2 className="text-2xl font-semibold text-gray-800 mt-8 mb-4 border-l-4 border-blue-500 pl-4">
                             {children}
                         </h2>
                     ),
                     h3: ({ children }) => (
-                        <h3 className="text-xl font-semibold mb-3 mt-5 text-gray-700">
+                        <h3 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
                             {children}
                         </h3>
                     ),
-                    h4: ({ children }) => (
-                        <h4 className="text-lg font-medium mb-2 mt-4 text-gray-600">
+                    // Parágrafos com melhor espaçamento
+                    p: ({ children }) => (
+                        <p className="text-gray-700 leading-relaxed mb-4">
                             {children}
-                        </h4>
+                        </p>
                     ),
-                    // Melhorar listas
-                    ul: ({ children }) => (
-                        <ul className="list-disc pl-6 mb-4 space-y-2">
-                            {children}
-                        </ul>
-                    ),
+                    // Listas numeradas
                     ol: ({ children }) => (
-                        <ol className="list-decimal pl-6 mb-4 space-y-2">
+                        <ol className="list-decimal list-inside space-y-2 mb-4 ml-4">
                             {children}
                         </ol>
                     ),
-                    li: ({ children }) => (
-                        <li className="leading-relaxed">{children}</li>
+                    // Listas com marcadores
+                    ul: ({ children }) => (
+                        <ul className="list-disc list-inside space-y-2 mb-4 ml-4">
+                            {children}
+                        </ul>
                     ),
-                    // Melhorar tabelas
+                    // Items de lista
+                    li: ({ children }) => (
+                        <li className="text-gray-700">{children}</li>
+                    ),
+                    // Links
+                    a: ({ children, href }) => (
+                        <a
+                            href={href}
+                            className="text-blue-600 hover:text-blue-800 underline"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            {children}
+                        </a>
+                    ),
+                    // Citações/blockquotes
+                    blockquote: ({ children }) => (
+                        <blockquote className="border-l-4 border-gray-300 pl-4 py-2 my-4 italic text-gray-600 bg-gray-50 rounded-r">
+                            {children}
+                        </blockquote>
+                    ),
+                    // Tabelas
                     table: ({ children }) => (
-                        <div className="overflow-x-auto mb-6">
-                            <table className="min-w-full border-collapse border border-gray-300 bg-white rounded-lg shadow-sm">
+                        <div className="overflow-x-auto my-4">
+                            <table className="min-w-full border-collapse border border-gray-300">
                                 {children}
                             </table>
                         </div>
                     ),
-                    thead: ({ children }) => (
-                        <thead className="bg-gray-50">{children}</thead>
-                    ),
                     th: ({ children }) => (
-                        <th className="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700">
+                        <th className="border border-gray-300 px-4 py-2 bg-gray-100 font-semibold text-left">
                             {children}
                         </th>
                     ),
                     td: ({ children }) => (
-                        <td className="border border-gray-300 px-4 py-2 text-gray-600">
+                        <td className="border border-gray-300 px-4 py-2">
                             {children}
                         </td>
                     ),
-                    // Melhorar blockquotes
-                    blockquote: ({ children }) => (
-                        <blockquote className="border-l-4 border-blue-500 pl-4 py-2 mb-4 bg-blue-50 italic text-gray-700">
-                            {children}
-                        </blockquote>
-                    ),
-                    // Melhorar código em linha
-                    inlineCode: ({ children }) => (
-                        <code className="bg-gray-100 px-2 py-1 rounded text-sm font-mono text-gray-800">
-                            {children}
-                        </code>
-                    ),
-                    // Melhorar blocos de código
-                    pre: ({ children }) => (
-                        <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto mb-4 text-sm">
-                            {children}
-                        </pre>
-                    ),
+                    // Divisórias horizontais
+                    hr: () => <hr className="my-8 border-gray-300" />,
                 }}
-                remarkPlugins={[]}
-                rehypePlugins={[]}
             >
                 {processedContent}
             </ReactMarkdown>
