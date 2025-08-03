@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
@@ -138,9 +139,10 @@ async function getCategoryContent(categoryId: string) {
 export async function generateMetadata({
     params,
 }: {
-    params: { slug: string };
+    params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-    const category = await getCategoryBySlug(params.slug);
+    const { slug } = await params;
+    const category = await getCategoryBySlug(slug);
 
     if (!category) {
         return {
@@ -157,9 +159,10 @@ export async function generateMetadata({
 export default async function CategoryPage({
     params,
 }: {
-    params: { slug: string };
+    params: Promise<{ slug: string }>;
 }) {
-    const category = await getCategoryBySlug(params.slug);
+    const { slug } = await params;
+    const category = await getCategoryBySlug(slug);
 
     if (!category) {
         notFound();
@@ -345,10 +348,13 @@ function ContentCard({
         switch (type) {
             case "theory":
             case "summary":
-                return (
-                    item.content?.substring(0, 150) + "..." ||
-                    "Sem conteúdo disponível"
-                );
+                // Remove LaTeX markup for preview
+                const cleanContent =
+                    item.content
+                        ?.replace(/\$\$[\s\S]*?\$\$/g, "[Fórmula Matemática]")
+                        ?.replace(/\$[^$\n]+\$/g, "[Equação]")
+                        ?.substring(0, 150) + "...";
+                return cleanContent || "Sem conteúdo disponível";
             case "flashcard":
                 return (
                     item.front?.substring(0, 100) + "..." ||
@@ -416,11 +422,25 @@ function ContentCard({
                 </div>
 
                 {/* Favorite button placeholder for RN5 */}
-                <div className="mt-4 pt-4 border-t">
+                <div className="mt-4 pt-4 border-t flex items-center justify-between">
                     <button className="flex items-center text-gray-400 hover:text-yellow-500 transition-colors text-sm">
                         <Star size={16} className="mr-2" />
                         Adicionar aos Favoritos
                     </button>
+
+                    {/* Botão para ver conteúdo completo */}
+                    {type === "theory" && (
+                        <Link href={`/theory/${item._id}`}>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className="ml-2"
+                            >
+                                <BookOpen size={14} className="mr-1" />
+                                Ver Completo
+                            </Button>
+                        </Link>
+                    )}
                 </div>
             </CardContent>
         </Card>

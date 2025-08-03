@@ -32,6 +32,7 @@ export async function GET(request: NextRequest) {
             filters.$or = [
                 { name: { $regex: queryParams.search, $options: "i" } },
                 { description: { $regex: queryParams.search, $options: "i" } },
+                { slug: { $regex: queryParams.search, $options: "i" } },
             ];
         }
 

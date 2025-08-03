@@ -1,0 +1,66 @@
+services:
+    # MongoDB Database para desenvolvimento
+    mongodb-dev:
+        image: mongo:7.0
+        container_name: math-learn-mongodb-dev
+        restart: unless-stopped
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: admin
+            MONGO_INITDB_ROOT_PASSWORD: password123
+            MONGO_INITDB_DATABASE: mathlearn_dev
+        ports:
+            - "27017:27017"
+        volumes:
+            - mongodb_dev_data:/data/db
+            - ./docker/mongo-init:/docker-entrypoint-initdb.d:ro
+        networks:
+            - math-learn-dev-network
+
+    # Next.js em modo desenvolvimento (hot reload)
+    nextjs-dev:
+        build:
+            context: .
+            dockerfile: Dockerfile.dev
+        container_name: math-learn-nextjs-dev
+        restart: unless-stopped
+        environment:
+            NODE_ENV: development
+            MONGODB_URI: mongodb://admin:password123@mongodb-dev:27017/mathlearn_dev?authSource=admin
+            NEXTAUTH_URL: http://localhost:3000
+            NEXTAUTH_SECRET: dev-secret-key
+        ports:
+            - "3003:3000"
+        depends_on:
+            - mongodb-dev
+        volumes:
+            - .:/app
+            - /app/node_modules
+            - /app/.next
+        networks:
+            - math-learn-dev-network
+
+    # MongoDB Admin Interface
+    mongo-express-dev:
+        image: mongo-express:1.0.0
+        container_name: math-learn-mongo-express-dev
+        restart: unless-stopped
+        environment:
+            ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+            ME_CONFIG_MONGODB_ADMINPASSWORD: password123
+            ME_CONFIG_MONGODB_URL: mongodb://admin:password123@mongodb-dev:27017/
+            ME_CONFIG_BASICAUTH_USERNAME: admin
+            ME_CONFIG_BASICAUTH_PASSWORD: admin123
+        ports:
+            - "8081:8081"
+        depends_on:
+            - mongodb-dev
+        networks:
+            - math-learn-dev-network
+
+volumes:
+    mongodb_dev_data:
+        driver: local
+
+networks:
+    math-learn-dev-network:
+        driver: bridge

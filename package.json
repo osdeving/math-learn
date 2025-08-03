@@ -9,7 +9,15 @@
         "lint": "next lint",
         "test": "jest",
         "test:watch": "jest --watch",
-        "test:coverage": "jest --coverage"
+        "test:coverage": "jest --coverage",
+        "docker:build": "docker build -t math-learn .",
+        "docker:dev": "docker compose -f docker-compose.dev.yml up --build",
+        "docker:prod": "docker compose up --build",
+        "docker:down": "docker compose down",
+        "docker:down-dev": "docker compose -f docker-compose.dev.yml down",
+        "docker:clean": "docker compose down -v --rmi all",
+        "docker:logs": "docker compose logs -f nextjs",
+        "docker:mongo": "docker compose exec mongodb mongosh -u admin -p password123"
     },
     "dependencies": {
         "@hookform/resolvers": "^5.2.1",
