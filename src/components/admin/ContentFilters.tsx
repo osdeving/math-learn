@@ -24,13 +24,20 @@ interface ContentFiltersProps {
     basePath: string;
 }
 
-export default function ContentFilters({ categories, basePath }: ContentFiltersProps) {
+export default function ContentFilters({
+    categories,
+    basePath,
+}: ContentFiltersProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
 
     const [search, setSearch] = useState(searchParams.get("search") || "");
-    const [categoryId, setCategoryId] = useState(searchParams.get("categoryId") || "");
-    const [published, setPublished] = useState(searchParams.get("published") || "");
+    const [categoryId, setCategoryId] = useState(
+        searchParams.get("categoryId") || ""
+    );
+    const [published, setPublished] = useState(
+        searchParams.get("published") || ""
+    );
 
     // Debounced search
     const [debouncedSearch, setDebouncedSearch] = useState(search);
@@ -40,20 +47,23 @@ export default function ContentFilters({ categories, basePath }: ContentFiltersP
         return () => clearTimeout(timer);
     }, [search]);
 
-    const updateURL = useCallback((updates: Record<string, string>) => {
-        const params = new URLSearchParams(searchParams);
-        
-        Object.entries(updates).forEach(([key, value]) => {
-            if (value) {
-                params.set(key, value);
-            } else {
-                params.delete(key);
-            }
-        });
+    const updateURL = useCallback(
+        (updates: Record<string, string>) => {
+            const params = new URLSearchParams(searchParams);
 
-        params.delete("page"); // Reset page when filtering
-        router.push(`${basePath}?${params.toString()}`);
-    }, [basePath, router, searchParams]);
+            Object.entries(updates).forEach(([key, value]) => {
+                if (value) {
+                    params.set(key, value);
+                } else {
+                    params.delete(key);
+                }
+            });
+
+            params.delete("page"); // Reset page when filtering
+            router.push(`${basePath}?${params.toString()}`);
+        },
+        [basePath, router, searchParams]
+    );
 
     useEffect(() => {
         updateURL({ search: debouncedSearch });
@@ -94,13 +104,16 @@ export default function ContentFilters({ categories, basePath }: ContentFiltersP
             </div>
 
             {/* Category Filter */}
-            <Select value={categoryId || "all"} onValueChange={handleCategoryChange}>
+            <Select
+                value={categoryId || "all"}
+                onValueChange={handleCategoryChange}
+            >
                 <SelectTrigger className="w-full sm:w-48">
                     <SelectValue placeholder="Todas as categorias" />
                 </SelectTrigger>
                 <SelectContent>
                     <SelectItem value="all">Todas as categorias</SelectItem>
-                    {categories.map((category) => (
+                    {categories && categories.length > 0 && categories.map((category) => (
                         <SelectItem key={category._id} value={category._id}>
                             {category.name}
                         </SelectItem>
@@ -109,7 +122,10 @@ export default function ContentFilters({ categories, basePath }: ContentFiltersP
             </Select>
 
             {/* Status Filter */}
-            <Select value={published || "all"} onValueChange={handlePublishedChange}>
+            <Select
+                value={published || "all"}
+                onValueChange={handlePublishedChange}
+            >
                 <SelectTrigger className="w-full sm:w-40">
                     <SelectValue placeholder="Status" />
                 </SelectTrigger>

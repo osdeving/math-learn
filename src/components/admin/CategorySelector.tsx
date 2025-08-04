@@ -106,7 +106,9 @@ export default function CategorySelector({
                             {selectedCategories.length > 0
                                 ? `${selectedCategories.length} categoria${
                                       selectedCategories.length > 1 ? "s" : ""
-                                  } selecionada${selectedCategories.length > 1 ? "s" : ""}`
+                                  } selecionada${
+                                      selectedCategories.length > 1 ? "s" : ""
+                                  }`
                                 : "Selecione as categorias"}
                         </span>
                         <ChevronDown className="h-4 w-4 opacity-50" />
@@ -124,11 +126,17 @@ export default function CategorySelector({
                                     <div
                                         key={category._id}
                                         className="flex items-center space-x-2 p-2 hover:bg-gray-50 rounded cursor-pointer"
-                                        onClick={() => handleToggle(category._id)}
+                                        onClick={() =>
+                                            handleToggle(category._id)
+                                        }
                                     >
                                         <Checkbox
-                                            checked={selectedIds.includes(category._id)}
-                                            onChange={() => handleToggle(category._id)}
+                                            checked={selectedIds.includes(
+                                                category._id
+                                            )}
+                                            onChange={() =>
+                                                handleToggle(category._id)
+                                            }
                                         />
                                         <label className="flex-1 text-sm cursor-pointer">
                                             {category.name}

@@ -4,7 +4,7 @@ import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { Eye, Edit } from "lucide-react";
+import { Edit, Eye } from "lucide-react";
 import { useState } from "react";
 
 interface MarkdownEditorProps {
@@ -70,7 +70,9 @@ export default function MarkdownEditor({
                 ) : (
                     <Textarea
                         value={value}
-                        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => onChange(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                            onChange(e.target.value)
+                        }
                         placeholder={placeholder}
                         className="min-h-[300px] border-0 resize-none font-mono text-sm"
                         style={{ outline: "none", boxShadow: "none" }}
@@ -81,18 +83,21 @@ export default function MarkdownEditor({
             {/* Help Text */}
             {!isPreview && (
                 <div className="text-xs text-gray-500 space-y-1">
-                    <p><strong>Dicas:</strong></p>
+                    <p>
+                        <strong>Dicas:</strong>
+                    </p>
                     <p>• Use # para títulos, ## para subtítulos</p>
                     <p>• Use **texto** para negrito, *texto* para itálico</p>
-                    <p>• Use $x^2$ para fórmulas inline e $$x^2$$ para fórmulas em bloco</p>
+                    <p>
+                        • Use $x^2$ para fórmulas inline e $$x^2$$ para fórmulas
+                        em bloco
+                    </p>
                     <p>• Use - ou 1. para listas</p>
                 </div>
             )}
 
             {/* Error */}
-            {error && (
-                <p className="text-sm text-red-600">{error}</p>
-            )}
+            {error && <p className="text-sm text-red-600">{error}</p>}
         </div>
     );
 }

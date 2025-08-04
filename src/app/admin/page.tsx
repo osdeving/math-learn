@@ -117,7 +117,8 @@ export default function AdminPage() {
                     <CardContent>
                         <div className="space-y-2">
                             <p className="text-sm text-muted-foreground">
-                                Criar questões de múltipla escolha com 5 alternativas
+                                Criar questões de múltipla escolha com 5
+                                alternativas
                             </p>
                             <Button asChild className="w-full">
                                 <Link href="/admin/questions">

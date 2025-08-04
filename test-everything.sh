@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 🧪 Comprehensive E2E Testing Script for Math Learn Platform
-# 
+#
 # This script runs ALL possible tests to validate 100% of the application:
 # - Frontend public pages
 # - Admin CRUD operations
@@ -51,9 +51,9 @@ run_test_suite() {
     local test_name="$1"
     local test_command="$2"
     local test_file="$3"
-    
+
     echo -e "${BLUE}🧪 Running ${test_name}...${NC}"
-    
+
     if eval "$test_command"; then
         echo -e "${GREEN}✅ ${test_name} PASSED${NC}"
         return 0

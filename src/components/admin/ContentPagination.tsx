@@ -107,7 +107,9 @@ export default function ContentPagination({
                         return (
                             <Button
                                 key={page}
-                                variant={current === page ? "default" : "outline"}
+                                variant={
+                                    current === page ? "default" : "outline"
+                                }
                                 size="sm"
                                 onClick={() => updatePage(page)}
                                 className="w-10"

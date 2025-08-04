@@ -79,9 +79,16 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 <div className="flex items-center justify-between px-4 py-3">
                     <div className="flex items-center gap-4">
                         {/* Mobile menu button */}
-                        <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+                        <Sheet
+                            open={mobileMenuOpen}
+                            onOpenChange={setMobileMenuOpen}
+                        >
                             <SheetTrigger asChild>
-                                <Button variant="ghost" size="icon" className="lg:hidden">
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="lg:hidden"
+                                >
                                     <Menu className="h-5 w-5" />
                                 </Button>
                             </SheetTrigger>
@@ -91,7 +98,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                                         <Link
                                             key={item.name}
                                             href={item.href}
-                                            onClick={() => setMobileMenuOpen(false)}
+                                            onClick={() =>
+                                                setMobileMenuOpen(false)
+                                            }
                                             className={cn(
                                                 "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
                                                 isActive(item.href)
@@ -168,9 +177,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
                 {/* Main content */}
                 <main className="flex-1 lg:pl-64">
-                    <div className="px-4 py-6 lg:px-8">
-                        {children}
-                    </div>
+                    <div className="px-4 py-6 lg:px-8">{children}</div>
                 </main>
             </div>
         </div>

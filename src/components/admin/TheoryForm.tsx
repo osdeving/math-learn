@@ -30,7 +30,10 @@ interface TheoryFormProps {
     isEditing?: boolean;
 }
 
-export default function TheoryForm({ theoryId, isEditing = false }: TheoryFormProps) {
+export default function TheoryForm({
+    theoryId,
+    isEditing = false,
+}: TheoryFormProps) {
     const router = useRouter();
     const { toast } = useToast();
 
@@ -50,7 +53,9 @@ export default function TheoryForm({ theoryId, isEditing = false }: TheoryFormPr
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await fetch("/api/categories?published=true&limit=100");
+                const response = await fetch(
+                    "/api/categories?published=true&limit=100"
+                );
                 if (response.ok) {
                     const data = await response.json();
                     setCategories(data.categories || []);
@@ -71,7 +76,7 @@ export default function TheoryForm({ theoryId, isEditing = false }: TheoryFormPr
             try {
                 setIsInitialLoading(true);
                 const response = await fetch(`/api/theories/${theoryId}`);
-                
+
                 if (!response.ok) {
                     throw new Error("Theory not found");
                 }
@@ -80,7 +85,9 @@ export default function TheoryForm({ theoryId, isEditing = false }: TheoryFormPr
                 setFormData({
                     title: data.title,
                     content: data.content,
-                    categoryIds: data.categoryIds.map((cat: any) => cat._id || cat),
+                    categoryIds: data.categoryIds.map(
+                        (cat: any) => cat._id || cat
+                    ),
                     isPublished: data.isPublished,
                 });
             } catch (error) {
@@ -108,7 +115,7 @@ export default function TheoryForm({ theoryId, isEditing = false }: TheoryFormPr
             const url = isEditing
                 ? `/api/theories/${theoryId}`
                 : "/api/theories";
-            
+
             const method = isEditing ? "PUT" : "POST";
 
             const response = await fetch(url, {
@@ -131,7 +138,9 @@ export default function TheoryForm({ theoryId, isEditing = false }: TheoryFormPr
 
             toast({
                 title: "Sucesso",
-                description: `Teoria ${isEditing ? "atualizada" : "criada"} com sucesso.`,
+                description: `Teoria ${
+                    isEditing ? "atualizada" : "criada"
+                } com sucesso.`,
             });
 
             router.push("/admin/theory");
@@ -139,7 +148,11 @@ export default function TheoryForm({ theoryId, isEditing = false }: TheoryFormPr
             console.error("Error saving theory:", error);
             toast({
                 title: "Erro",
-                description: error.message || `Não foi possível ${isEditing ? "atualizar" : "criar"} a teoria.`,
+                description:
+                    error.message ||
+                    `Não foi possível ${
+                        isEditing ? "atualizar" : "criar"
+                    } a teoria.`,
                 variant: "destructive",
             });
         } finally {
@@ -152,7 +165,7 @@ export default function TheoryForm({ theoryId, isEditing = false }: TheoryFormPr
             ...prev,
             [field]: value,
         }));
-        
+
         // Clear error when user starts typing
         if (errors[field]) {
             setErrors((prev) => ({
@@ -206,7 +219,9 @@ export default function TheoryForm({ theoryId, isEditing = false }: TheoryFormPr
                         className={errors.title ? "border-red-500" : ""}
                     />
                     {errors.title && (
-                        <p className="text-sm text-red-600 mt-1">{errors.title}</p>
+                        <p className="text-sm text-red-600 mt-1">
+                            {errors.title}
+                        </p>
                     )}
                 </div>
 
@@ -236,7 +251,9 @@ export default function TheoryForm({ theoryId, isEditing = false }: TheoryFormPr
                     <Switch
                         id="published"
                         checked={formData.isPublished}
-                        onCheckedChange={(checked: boolean) => handleChange("isPublished", checked)}
+                        onCheckedChange={(checked: boolean) =>
+                            handleChange("isPublished", checked)
+                        }
                     />
                     <Label htmlFor="published">Publicar imediatamente</Label>
                 </div>

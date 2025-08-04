@@ -30,7 +30,10 @@ interface FlashcardFormProps {
     isEditing?: boolean;
 }
 
-export default function FlashcardForm({ flashcardId, isEditing = false }: FlashcardFormProps) {
+export default function FlashcardForm({
+    flashcardId,
+    isEditing = false,
+}: FlashcardFormProps) {
     const router = useRouter();
     const { toast } = useToast();
 
@@ -50,7 +53,9 @@ export default function FlashcardForm({ flashcardId, isEditing = false }: Flashc
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await fetch("/api/categories?published=true&limit=100");
+                const response = await fetch(
+                    "/api/categories?published=true&limit=100"
+                );
                 if (response.ok) {
                     const data = await response.json();
                     setCategories(data.categories || []);
@@ -71,7 +76,7 @@ export default function FlashcardForm({ flashcardId, isEditing = false }: Flashc
             try {
                 setIsInitialLoading(true);
                 const response = await fetch(`/api/flashcards/${flashcardId}`);
-                
+
                 if (!response.ok) {
                     throw new Error("Flashcard not found");
                 }
@@ -80,7 +85,9 @@ export default function FlashcardForm({ flashcardId, isEditing = false }: Flashc
                 setFormData({
                     question: data.question,
                     answer: data.answer,
-                    categoryIds: data.categoryIds.map((cat: any) => cat._id || cat),
+                    categoryIds: data.categoryIds.map(
+                        (cat: any) => cat._id || cat
+                    ),
                     isPublished: data.isPublished,
                 });
             } catch (error) {
@@ -108,7 +115,7 @@ export default function FlashcardForm({ flashcardId, isEditing = false }: Flashc
             const url = isEditing
                 ? `/api/flashcards/${flashcardId}`
                 : "/api/flashcards";
-            
+
             const method = isEditing ? "PUT" : "POST";
 
             const response = await fetch(url, {
@@ -131,7 +138,9 @@ export default function FlashcardForm({ flashcardId, isEditing = false }: Flashc
 
             toast({
                 title: "Sucesso",
-                description: `Flashcard ${isEditing ? "atualizado" : "criado"} com sucesso.`,
+                description: `Flashcard ${
+                    isEditing ? "atualizado" : "criado"
+                } com sucesso.`,
             });
 
             router.push("/admin/flashcards");
@@ -139,7 +148,11 @@ export default function FlashcardForm({ flashcardId, isEditing = false }: Flashc
             console.error("Error saving flashcard:", error);
             toast({
                 title: "Erro",
-                description: error.message || `Não foi possível ${isEditing ? "atualizar" : "criar"} o flashcard.`,
+                description:
+                    error.message ||
+                    `Não foi possível ${
+                        isEditing ? "atualizar" : "criar"
+                    } o flashcard.`,
                 variant: "destructive",
             });
         } finally {
@@ -152,7 +165,7 @@ export default function FlashcardForm({ flashcardId, isEditing = false }: Flashc
             ...prev,
             [field]: value,
         }));
-        
+
         // Clear error when user starts typing
         if (errors[field]) {
             setErrors((prev) => ({
@@ -201,12 +214,16 @@ export default function FlashcardForm({ flashcardId, isEditing = false }: Flashc
                     <Input
                         id="question"
                         value={formData.question}
-                        onChange={(e) => handleChange("question", e.target.value)}
+                        onChange={(e) =>
+                            handleChange("question", e.target.value)
+                        }
                         placeholder="Digite a pergunta do flashcard..."
                         className={errors.question ? "border-red-500" : ""}
                     />
                     {errors.question && (
-                        <p className="text-sm text-red-600 mt-1">{errors.question}</p>
+                        <p className="text-sm text-red-600 mt-1">
+                            {errors.question}
+                        </p>
                     )}
                 </div>
 
@@ -237,7 +254,9 @@ export default function FlashcardForm({ flashcardId, isEditing = false }: Flashc
                     <Switch
                         id="published"
                         checked={formData.isPublished}
-                        onCheckedChange={(checked: boolean) => handleChange("isPublished", checked)}
+                        onCheckedChange={(checked: boolean) =>
+                            handleChange("isPublished", checked)
+                        }
                     />
                     <Label htmlFor="published">Publicar imediatamente</Label>
                 </div>

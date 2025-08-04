@@ -52,7 +52,7 @@ export default function QuestionsListPage() {
             setIsLoading(true);
             const params = new URLSearchParams(searchParams);
             const response = await fetch(`/api/questions?${params.toString()}`);
-            
+
             if (!response.ok) {
                 throw new Error("Failed to fetch questions");
             }
@@ -74,9 +74,11 @@ export default function QuestionsListPage() {
 
     const fetchCategories = async () => {
         try {
-            const response = await fetch("/api/categories?published=true&limit=100");
+            const response = await fetch(
+                "/api/categories?published=true&limit=100"
+            );
             if (!response.ok) return;
-            
+
             const data = await response.json();
             setCategories(data.categories || []);
         } catch (error) {
@@ -136,7 +138,9 @@ export default function QuestionsListPage() {
 
             toast({
                 title: "Sucesso",
-                description: `Questão ${published ? "publicada" : "despublicada"} com sucesso.`,
+                description: `Questão ${
+                    published ? "publicada" : "despublicada"
+                } com sucesso.`,
             });
 
             fetchQuestions();
@@ -155,7 +159,9 @@ export default function QuestionsListPage() {
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Questões</h1>
+                    <h1 className="text-2xl font-bold text-gray-900">
+                        Questões
+                    </h1>
                     <p className="text-gray-600">
                         Gerencie as questões de múltipla escolha
                     </p>
@@ -169,7 +175,10 @@ export default function QuestionsListPage() {
             </div>
 
             {/* Filters */}
-            <ContentFilters categories={categories} basePath="/admin/questions" />
+            <ContentFilters
+                categories={categories}
+                basePath="/admin/questions"
+            />
 
             {/* Table */}
             <ContentTable
@@ -182,7 +191,10 @@ export default function QuestionsListPage() {
 
             {/* Pagination */}
             {!isLoading && (
-                <ContentPagination pagination={pagination} basePath="/admin/questions" />
+                <ContentPagination
+                    pagination={pagination}
+                    basePath="/admin/questions"
+                />
             )}
         </div>
     );

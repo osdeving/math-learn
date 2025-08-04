@@ -9,7 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { ArrowLeft, Plus, Save, Trash2 } from "lucide-react";
+import { ArrowLeft, Save } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -40,7 +40,10 @@ interface QuestionFormProps {
     isEditing?: boolean;
 }
 
-export default function QuestionForm({ questionId, isEditing = false }: QuestionFormProps) {
+export default function QuestionForm({
+    questionId,
+    isEditing = false,
+}: QuestionFormProps) {
     const router = useRouter();
     const { toast } = useToast();
 
@@ -69,7 +72,9 @@ export default function QuestionForm({ questionId, isEditing = false }: Question
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await fetch("/api/categories?published=true&limit=100");
+                const response = await fetch(
+                    "/api/categories?published=true&limit=100"
+                );
                 if (response.ok) {
                     const data = await response.json();
                     setCategories(data.categories || []);
@@ -90,7 +95,7 @@ export default function QuestionForm({ questionId, isEditing = false }: Question
             try {
                 setIsInitialLoading(true);
                 const response = await fetch(`/api/questions/${questionId}`);
-                
+
                 if (!response.ok) {
                     throw new Error("Question not found");
                 }
@@ -102,7 +107,9 @@ export default function QuestionForm({ questionId, isEditing = false }: Question
                     alternatives: data.alternatives,
                     correctAnswer: data.correctAnswer,
                     explanation: data.explanation,
-                    categoryIds: data.categoryIds.map((cat: any) => cat._id || cat),
+                    categoryIds: data.categoryIds.map(
+                        (cat: any) => cat._id || cat
+                    ),
                     isPublished: data.isPublished,
                 });
             } catch (error) {
@@ -146,14 +153,20 @@ export default function QuestionForm({ questionId, isEditing = false }: Question
         }
 
         // Validate alternatives
-        const emptyAlternatives = formData.alternatives.filter(alt => !alt.text.trim());
+        const emptyAlternatives = formData.alternatives.filter(
+            (alt) => !alt.text.trim()
+        );
         if (emptyAlternatives.length > 0) {
-            newErrors.alternatives = "Todas as alternativas devem ser preenchidas";
+            newErrors.alternatives =
+                "Todas as alternativas devem ser preenchidas";
         }
 
-        const correctCount = formData.alternatives.filter(alt => alt.isCorrect).length;
+        const correctCount = formData.alternatives.filter(
+            (alt) => alt.isCorrect
+        ).length;
         if (correctCount !== 1) {
-            newErrors.alternatives = "Exatamente uma alternativa deve estar marcada como correta";
+            newErrors.alternatives =
+                "Exatamente uma alternativa deve estar marcada como correta";
         }
 
         if (Object.keys(newErrors).length > 0) {
@@ -166,7 +179,7 @@ export default function QuestionForm({ questionId, isEditing = false }: Question
             const url = isEditing
                 ? `/api/questions/${questionId}`
                 : "/api/questions";
-            
+
             const method = isEditing ? "PUT" : "POST";
 
             const response = await fetch(url, {
@@ -189,7 +202,9 @@ export default function QuestionForm({ questionId, isEditing = false }: Question
 
             toast({
                 title: "Sucesso",
-                description: `Questão ${isEditing ? "atualizada" : "criada"} com sucesso.`,
+                description: `Questão ${
+                    isEditing ? "atualizada" : "criada"
+                } com sucesso.`,
             });
 
             router.push("/admin/questions");
@@ -197,7 +212,11 @@ export default function QuestionForm({ questionId, isEditing = false }: Question
             console.error("Error saving question:", error);
             toast({
                 title: "Erro",
-                description: error.message || `Não foi possível ${isEditing ? "atualizar" : "criar"} a questão.`,
+                description:
+                    error.message ||
+                    `Não foi possível ${
+                        isEditing ? "atualizar" : "criar"
+                    } a questão.`,
                 variant: "destructive",
             });
         } finally {
@@ -210,7 +229,7 @@ export default function QuestionForm({ questionId, isEditing = false }: Question
             ...prev,
             [field]: value,
         }));
-        
+
         // Clear error when user starts typing
         if (errors[field]) {
             setErrors((prev) => ({
@@ -220,7 +239,11 @@ export default function QuestionForm({ questionId, isEditing = false }: Question
         }
     };
 
-    const handleAlternativeChange = (index: number, field: keyof Alternative, value: any) => {
+    const handleAlternativeChange = (
+        index: number,
+        field: keyof Alternative,
+        value: any
+    ) => {
         const newAlternatives = [...formData.alternatives];
         newAlternatives[index] = {
             ...newAlternatives[index],
@@ -234,12 +257,12 @@ export default function QuestionForm({ questionId, isEditing = false }: Question
                     alt.isCorrect = false;
                 }
             });
-            setFormData(prev => ({ ...prev, correctAnswer: index }));
+            setFormData((prev) => ({ ...prev, correctAnswer: index }));
         }
 
-        setFormData(prev => ({ 
-            ...prev, 
-            alternatives: newAlternatives 
+        setFormData((prev) => ({
+            ...prev,
+            alternatives: newAlternatives,
         }));
 
         // Clear alternatives error
@@ -295,7 +318,9 @@ export default function QuestionForm({ questionId, isEditing = false }: Question
                         className={errors.title ? "border-red-500" : ""}
                     />
                     {errors.title && (
-                        <p className="text-sm text-red-600 mt-1">{errors.title}</p>
+                        <p className="text-sm text-red-600 mt-1">
+                            {errors.title}
+                        </p>
                     )}
                 </div>
 
@@ -305,21 +330,33 @@ export default function QuestionForm({ questionId, isEditing = false }: Question
                     <Textarea
                         id="statement"
                         value={formData.statement}
-                        onChange={(e) => handleChange("statement", e.target.value)}
+                        onChange={(e) =>
+                            handleChange("statement", e.target.value)
+                        }
                         placeholder="Digite o enunciado da questão..."
-                        className={cn("min-h-[120px]", errors.statement ? "border-red-500" : "")}
+                        className={cn(
+                            "min-h-[120px]",
+                            errors.statement ? "border-red-500" : ""
+                        )}
                     />
                     {errors.statement && (
-                        <p className="text-sm text-red-600 mt-1">{errors.statement}</p>
+                        <p className="text-sm text-red-600 mt-1">
+                            {errors.statement}
+                        </p>
                     )}
                 </div>
 
                 {/* Alternatives */}
                 <div>
-                    <Label>Alternativas * (exatamente 5, sendo 1 correta)</Label>
+                    <Label>
+                        Alternativas * (exatamente 5, sendo 1 correta)
+                    </Label>
                     <div className="space-y-3 mt-2">
                         {formData.alternatives.map((alternative, index) => (
-                            <div key={index} className="flex items-start gap-3 p-3 border rounded-lg">
+                            <div
+                                key={index}
+                                className="flex items-start gap-3 p-3 border rounded-lg"
+                            >
                                 <div className="flex items-center gap-2 min-w-0">
                                     <span className="text-sm font-medium text-gray-600">
                                         {String.fromCharCode(65 + index)})
@@ -328,15 +365,29 @@ export default function QuestionForm({ questionId, isEditing = false }: Question
                                         type="radio"
                                         name="correctAnswer"
                                         checked={alternative.isCorrect}
-                                        onChange={(e) => handleAlternativeChange(index, "isCorrect", e.target.checked)}
+                                        onChange={(e) =>
+                                            handleAlternativeChange(
+                                                index,
+                                                "isCorrect",
+                                                e.target.checked
+                                            )
+                                        }
                                         className="text-blue-600"
                                     />
                                 </div>
                                 <div className="flex-1">
                                     <Textarea
                                         value={alternative.text}
-                                        onChange={(e) => handleAlternativeChange(index, "text", e.target.value)}
-                                        placeholder={`Digite a alternativa ${String.fromCharCode(65 + index)}...`}
+                                        onChange={(e) =>
+                                            handleAlternativeChange(
+                                                index,
+                                                "text",
+                                                e.target.value
+                                            )
+                                        }
+                                        placeholder={`Digite a alternativa ${String.fromCharCode(
+                                            65 + index
+                                        )}...`}
                                         className="min-h-[60px] resize-none"
                                     />
                                 </div>
@@ -344,7 +395,9 @@ export default function QuestionForm({ questionId, isEditing = false }: Question
                         ))}
                     </div>
                     {errors.alternatives && (
-                        <p className="text-sm text-red-600 mt-1">{errors.alternatives}</p>
+                        <p className="text-sm text-red-600 mt-1">
+                            {errors.alternatives}
+                        </p>
                     )}
                 </div>
 
@@ -364,7 +417,9 @@ export default function QuestionForm({ questionId, isEditing = false }: Question
                     <Label>Explicação *</Label>
                     <MarkdownEditor
                         value={formData.explanation}
-                        onChange={(explanation) => handleChange("explanation", explanation)}
+                        onChange={(explanation) =>
+                            handleChange("explanation", explanation)
+                        }
                         placeholder="Digite a explicação da resposta correta..."
                         error={errors.explanation}
                     />
@@ -375,7 +430,9 @@ export default function QuestionForm({ questionId, isEditing = false }: Question
                     <Switch
                         id="published"
                         checked={formData.isPublished}
-                        onCheckedChange={(checked: boolean) => handleChange("isPublished", checked)}
+                        onCheckedChange={(checked: boolean) =>
+                            handleChange("isPublished", checked)
+                        }
                     />
                     <Label htmlFor="published">Publicar imediatamente</Label>
                 </div>

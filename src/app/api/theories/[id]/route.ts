@@ -78,9 +78,9 @@ export async function PATCH(
 
         if (typeof isPublished !== "boolean") {
             return new Response(
-                JSON.stringify({ 
-                    success: false, 
-                    message: "isPublished must be a boolean" 
+                JSON.stringify({
+                    success: false,
+                    message: "isPublished must be a boolean",
                 }),
                 {
                     status: 400,

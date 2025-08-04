@@ -49,13 +49,16 @@ export default function ContentTable({
         return (
             <div className="space-y-3">
                 {Array.from({ length: 5 }).map((_, i) => (
-                    <div key={i} className="h-16 bg-gray-100 rounded animate-pulse" />
+                    <div
+                        key={i}
+                        className="h-16 bg-gray-100 rounded animate-pulse"
+                    />
                 ))}
             </div>
         );
     }
 
-    if (items.length === 0) {
+    if (!items || items.length === 0) {
         return (
             <div className="text-center py-12">
                 <p className="text-gray-500">Nenhum item encontrado.</p>
@@ -80,7 +83,7 @@ export default function ContentTable({
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {items.map((item) => (
+                    {items && items.map((item) => (
                         <TableRow key={item._id}>
                             <TableCell className="font-medium">
                                 <Link
@@ -92,7 +95,7 @@ export default function ContentTable({
                             </TableCell>
                             <TableCell>
                                 <div className="flex flex-wrap gap-1">
-                                    {item.categoryIds?.map((category) => (
+                                    {item.categoryIds && item.categoryIds.length > 0 && item.categoryIds.map((category) => (
                                         <Badge
                                             key={category.slug}
                                             variant="secondary"
@@ -105,9 +108,15 @@ export default function ContentTable({
                             </TableCell>
                             <TableCell>
                                 <Badge
-                                    variant={item.isPublished ? "default" : "secondary"}
+                                    variant={
+                                        item.isPublished
+                                            ? "default"
+                                            : "secondary"
+                                    }
                                 >
-                                    {item.isPublished ? "Publicado" : "Rascunho"}
+                                    {item.isPublished
+                                        ? "Publicado"
+                                        : "Rascunho"}
                                 </Badge>
                             </TableCell>
                             <TableCell>{formatDate(item.createdAt)}</TableCell>
@@ -121,13 +130,17 @@ export default function ContentTable({
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
                                         <DropdownMenuItem asChild>
-                                            <Link href={`${basePath}/${item._id}`}>
+                                            <Link
+                                                href={`${basePath}/${item._id}`}
+                                            >
                                                 <Edit className="mr-2 h-4 w-4" />
                                                 Editar
                                             </Link>
                                         </DropdownMenuItem>
                                         <DropdownMenuItem asChild>
-                                            <Link href={`${basePath}/${item._id}/preview`}>
+                                            <Link
+                                                href={`${basePath}/${item._id}/preview`}
+                                            >
                                                 <Eye className="mr-2 h-4 w-4" />
                                                 Preview
                                             </Link>
@@ -135,16 +148,23 @@ export default function ContentTable({
                                         {onTogglePublish && (
                                             <DropdownMenuItem
                                                 onClick={() =>
-                                                    onTogglePublish(item._id, !item.isPublished)
+                                                    onTogglePublish(
+                                                        item._id,
+                                                        !item.isPublished
+                                                    )
                                                 }
                                             >
-                                                {item.isPublished ? "Despublicar" : "Publicar"}
+                                                {item.isPublished
+                                                    ? "Despublicar"
+                                                    : "Publicar"}
                                             </DropdownMenuItem>
                                         )}
                                         <DropdownMenuSeparator />
                                         {onDelete && (
                                             <DropdownMenuItem
-                                                onClick={() => onDelete(item._id)}
+                                                onClick={() =>
+                                                    onDelete(item._id)
+                                                }
                                                 className="text-red-600"
                                             >
                                                 <Trash2 className="mr-2 h-4 w-4" />

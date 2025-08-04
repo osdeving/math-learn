@@ -52,14 +52,19 @@ export default function TheoryListPage() {
             setIsLoading(true);
             const params = new URLSearchParams(searchParams);
             const response = await fetch(`/api/theories?${params.toString()}`);
-            
+
             if (!response.ok) {
                 throw new Error("Failed to fetch theories");
             }
 
             const data = await response.json();
-            setTheories(data.theories);
-            setPagination(data.pagination);
+            setTheories(data.theories || []);
+            setPagination(data.pagination || {
+                current: 1,
+                total: 1,
+                count: 0,
+                totalCount: 0,
+            });
         } catch (error) {
             console.error("Error fetching theories:", error);
             toast({
@@ -74,9 +79,11 @@ export default function TheoryListPage() {
 
     const fetchCategories = async () => {
         try {
-            const response = await fetch("/api/categories?published=true&limit=100");
+            const response = await fetch(
+                "/api/categories?published=true&limit=100"
+            );
             if (!response.ok) return;
-            
+
             const data = await response.json();
             setCategories(data.categories || []);
         } catch (error) {
@@ -136,7 +143,9 @@ export default function TheoryListPage() {
 
             toast({
                 title: "Sucesso",
-                description: `Teoria ${published ? "publicada" : "despublicada"} com sucesso.`,
+                description: `Teoria ${
+                    published ? "publicada" : "despublicada"
+                } com sucesso.`,
             });
 
             fetchTheories();
@@ -155,7 +164,9 @@ export default function TheoryListPage() {
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Teorias</h1>
+                    <h1 className="text-2xl font-bold text-gray-900">
+                        Teorias
+                    </h1>
                     <p className="text-gray-600">
                         Gerencie o conteúdo teórico da plataforma
                     </p>
@@ -182,7 +193,10 @@ export default function TheoryListPage() {
 
             {/* Pagination */}
             {!isLoading && (
-                <ContentPagination pagination={pagination} basePath="/admin/theory" />
+                <ContentPagination
+                    pagination={pagination}
+                    basePath="/admin/theory"
+                />
             )}
         </div>
     );
