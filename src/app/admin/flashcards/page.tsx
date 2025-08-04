@@ -53,7 +53,9 @@ export default function FlashcardsListPage() {
         try {
             setIsLoading(true);
             const params = new URLSearchParams(searchParams);
-            const response = await fetch(`/api/flashcards?${params.toString()}`);
+            const response = await fetch(
+                `/api/flashcards?${params.toString()}`
+            );
 
             if (!response.ok) {
                 throw new Error("Failed to fetch flashcards");
@@ -61,10 +63,12 @@ export default function FlashcardsListPage() {
 
             const data = await response.json();
             // Adapt flashcards to ContentTable interface
-            const adaptedFlashcards = (data.data?.flashcards || []).map((flashcard: any) => ({
-                ...flashcard,
-                title: flashcard.question, // Use question as title for ContentTable
-            }));
+            const adaptedFlashcards = (data.data?.flashcards || []).map(
+                (flashcard: any) => ({
+                    ...flashcard,
+                    title: flashcard.question, // Use question as title for ContentTable
+                })
+            );
             setFlashcards(adaptedFlashcards);
             setPagination(
                 data.data?.pagination || {
@@ -189,7 +193,10 @@ export default function FlashcardsListPage() {
             </div>
 
             {/* Filters */}
-            <ContentFilters categories={categories} basePath="/admin/flashcards" />
+            <ContentFilters
+                categories={categories}
+                basePath="/admin/flashcards"
+            />
 
             {/* Table */}
             <ContentTable

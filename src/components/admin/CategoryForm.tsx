@@ -231,7 +231,9 @@ export default function CategoryForm({
                     <Textarea
                         id="description"
                         value={formData.description}
-                        onChange={(e) => handleChange("description", e.target.value)}
+                        onChange={(e) =>
+                            handleChange("description", e.target.value)
+                        }
                         placeholder="Digite a descrição da categoria..."
                         className={errors.description ? "border-red-500" : ""}
                     />
@@ -253,7 +255,8 @@ export default function CategoryForm({
                         className={errors.slug ? "border-red-500" : ""}
                     />
                     <p className="text-sm text-gray-500 mt-1">
-                        URL amigável da categoria. Gerada automaticamente, mas pode ser editada.
+                        URL amigável da categoria. Gerada automaticamente, mas
+                        pode ser editada.
                     </p>
                     {errors.slug && (
                         <p className="text-sm text-red-600 mt-1">

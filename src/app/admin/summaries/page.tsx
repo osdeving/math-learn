@@ -182,7 +182,10 @@ export default function SummariesListPage() {
             </div>
 
             {/* Filters */}
-            <ContentFilters categories={categories} basePath="/admin/summaries" />
+            <ContentFilters
+                categories={categories}
+                basePath="/admin/summaries"
+            />
 
             {/* Table */}
             <ContentTable
