@@ -237,7 +237,7 @@ export default function CategoriesAdminPage() {
                                                 variant="outline"
                                             >
                                                 <Link
-                                                    href={`/admin/categories/${category._id}/edit`}
+                                                    href={`/admin/categories/${category._id}`}
                                                 >
                                                     Editar
                                                 </Link>

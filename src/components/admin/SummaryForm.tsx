@@ -18,28 +18,28 @@ interface Category {
     slug: string;
 }
 
-interface FlashcardFormData {
-    question: string;
-    answer: string;
+interface SummaryFormData {
+    title: string;
+    content: string;
     categoryIds: string[];
     isPublished: boolean;
 }
 
-interface FlashcardFormProps {
-    flashcardId?: string;
+interface SummaryFormProps {
+    summaryId?: string;
     isEditing?: boolean;
 }
 
-export default function FlashcardForm({
-    flashcardId,
+export default function SummaryForm({
+    summaryId,
     isEditing = false,
-}: FlashcardFormProps) {
+}: SummaryFormProps) {
     const router = useRouter();
     const { toast } = useToast();
 
-    const [formData, setFormData] = useState<FlashcardFormData>({
-        question: "",
-        answer: "",
+    const [formData, setFormData] = useState<SummaryFormData>({
+        title: "",
+        content: "",
         categoryIds: [],
         isPublished: false,
     });
@@ -68,44 +68,44 @@ export default function FlashcardForm({
         fetchCategories();
     }, []);
 
-    // Fetch existing flashcard for editing
+    // Fetch existing summary for editing
     useEffect(() => {
-        if (!isEditing || !flashcardId) return;
+        if (!isEditing || !summaryId) return;
 
-        const fetchFlashcard = async () => {
+        const fetchSummary = async () => {
             try {
                 setIsInitialLoading(true);
-                const response = await fetch(`/api/flashcards/${flashcardId}`);
+                const response = await fetch(`/api/summaries/${summaryId}`);
 
                 if (!response.ok) {
-                    throw new Error("Flashcard not found");
+                    throw new Error("Summary not found");
                 }
 
                 const data = await response.json();
-                const flashcardData = data.data;
+                const summaryData = data.data;
                 setFormData({
-                    question: flashcardData.question,
-                    answer: flashcardData.answer,
-                    categoryIds: flashcardData.categoryIds.map(
+                    title: summaryData.title,
+                    content: summaryData.content,
+                    categoryIds: summaryData.categoryIds.map(
                         (cat: any) => cat._id || cat
                     ),
-                    isPublished: flashcardData.isPublished,
+                    isPublished: summaryData.isPublished,
                 });
             } catch (error) {
-                console.error("Error fetching flashcard:", error);
+                console.error("Error fetching summary:", error);
                 toast({
                     title: "Erro",
-                    description: "Não foi possível carregar o flashcard.",
+                    description: "Não foi possível carregar o resumo.",
                     variant: "destructive",
                 });
-                router.push("/admin/flashcards");
+                router.push("/admin/summaries");
             } finally {
                 setIsInitialLoading(false);
             }
         };
 
-        fetchFlashcard();
-    }, [isEditing, flashcardId, toast, router]);
+        fetchSummary();
+    }, [isEditing, summaryId, toast, router]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -114,8 +114,8 @@ export default function FlashcardForm({
 
         try {
             const url = isEditing
-                ? `/api/flashcards/${flashcardId}`
-                : "/api/flashcards";
+                ? `/api/summaries/${summaryId}`
+                : "/api/summaries";
 
             const method = isEditing ? "PUT" : "POST";
 
@@ -134,26 +134,26 @@ export default function FlashcardForm({
                     setErrors(data.errors);
                     return;
                 }
-                throw new Error(data.message || "Failed to save flashcard");
+                throw new Error(data.message || "Failed to save summary");
             }
 
             toast({
                 title: "Sucesso",
-                description: `Flashcard ${
+                description: `Resumo ${
                     isEditing ? "atualizado" : "criado"
                 } com sucesso.`,
             });
 
-            router.push("/admin/flashcards");
+            router.push("/admin/summaries");
         } catch (error: any) {
-            console.error("Error saving flashcard:", error);
+            console.error("Error saving summary:", error);
             toast({
                 title: "Erro",
                 description:
                     error.message ||
                     `Não foi possível ${
                         isEditing ? "atualizar" : "criar"
-                    } o flashcard.`,
+                    } o resumo.`,
                 variant: "destructive",
             });
         } finally {
@@ -161,7 +161,7 @@ export default function FlashcardForm({
         }
     };
 
-    const handleChange = (field: keyof FlashcardFormData, value: any) => {
+    const handleChange = (field: keyof SummaryFormData, value: any) => {
         setFormData((prev) => ({
             ...prev,
             [field]: value,
@@ -191,39 +191,37 @@ export default function FlashcardForm({
             {/* Header */}
             <div className="flex items-center gap-4 mb-6">
                 <Button variant="outline" size="icon" asChild>
-                    <Link href="/admin/flashcards">
+                    <Link href="/admin/summaries">
                         <ArrowLeft className="h-4 w-4" />
                     </Link>
                 </Button>
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900">
-                        {isEditing ? "Editar Flashcard" : "Novo Flashcard"}
+                        {isEditing ? "Editar Resumo" : "Novo Resumo"}
                     </h1>
                     <p className="text-gray-600">
                         {isEditing
-                            ? "Atualize o flashcard"
-                            : "Crie um novo flashcard para memorização"}
+                            ? "Atualize o resumo de conteúdo"
+                            : "Crie novo resumo conciso com suporte a LaTeX"}
                     </p>
                 </div>
             </div>
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Question */}
+                {/* Title */}
                 <div>
-                    <Label htmlFor="question">Pergunta *</Label>
+                    <Label htmlFor="title">Título *</Label>
                     <Input
-                        id="question"
-                        value={formData.question}
-                        onChange={(e) =>
-                            handleChange("question", e.target.value)
-                        }
-                        placeholder="Digite a pergunta do flashcard..."
-                        className={errors.question ? "border-red-500" : ""}
+                        id="title"
+                        value={formData.title}
+                        onChange={(e) => handleChange("title", e.target.value)}
+                        placeholder="Digite o título do resumo..."
+                        className={errors.title ? "border-red-500" : ""}
                     />
-                    {errors.question && (
+                    {errors.title && (
                         <p className="text-sm text-red-600 mt-1">
-                            {errors.question}
+                            {errors.title}
                         </p>
                     )}
                 </div>
@@ -239,14 +237,14 @@ export default function FlashcardForm({
                     />
                 </div>
 
-                {/* Answer */}
+                {/* Content */}
                 <div>
-                    <Label>Resposta *</Label>
+                    <Label>Conteúdo *</Label>
                     <MarkdownEditor
-                        value={formData.answer}
-                        onChange={(answer) => handleChange("answer", answer)}
-                        placeholder="Digite a resposta do flashcard..."
-                        error={errors.answer}
+                        value={formData.content}
+                        onChange={(content) => handleChange("content", content)}
+                        error={errors.content}
+                        placeholder="Digite o resumo em Markdown. Use LaTeX para fórmulas: $x^2$ para inline e $$x^2$$ para bloco..."
                     />
                 </div>
 
@@ -271,11 +269,11 @@ export default function FlashcardForm({
                                 ? "Atualizando..."
                                 : "Criando..."
                             : isEditing
-                            ? "Atualizar Flashcard"
-                            : "Criar Flashcard"}
+                            ? "Atualizar Resumo"
+                            : "Criar Resumo"}
                     </Button>
                     <Button variant="outline" asChild>
-                        <Link href="/admin/flashcards">Cancelar</Link>
+                        <Link href="/admin/summaries">Cancelar</Link>
                     </Button>
                 </div>
             </form>

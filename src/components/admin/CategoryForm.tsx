@@ -1,111 +1,95 @@
 "use client";
 
-import CategorySelector from "@/components/admin/CategorySelector";
-import MarkdownEditor from "@/components/admin/MarkdownEditor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Save } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-interface Category {
-    _id: string;
+interface CategoryFormData {
     name: string;
+    description: string;
     slug: string;
-}
-
-interface FlashcardFormData {
-    question: string;
-    answer: string;
-    categoryIds: string[];
     isPublished: boolean;
 }
 
-interface FlashcardFormProps {
-    flashcardId?: string;
+interface CategoryFormProps {
+    categoryId?: string;
     isEditing?: boolean;
 }
 
-export default function FlashcardForm({
-    flashcardId,
+export default function CategoryForm({
+    categoryId,
     isEditing = false,
-}: FlashcardFormProps) {
+}: CategoryFormProps) {
     const router = useRouter();
     const { toast } = useToast();
 
-    const [formData, setFormData] = useState<FlashcardFormData>({
-        question: "",
-        answer: "",
-        categoryIds: [],
+    const [formData, setFormData] = useState<CategoryFormData>({
+        name: "",
+        description: "",
+        slug: "",
         isPublished: false,
     });
 
-    const [categories, setCategories] = useState<Category[]>([]);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isLoading, setIsLoading] = useState(false);
     const [isInitialLoading, setIsInitialLoading] = useState(isEditing);
 
-    // Fetch categories
+    // Generate slug from name
+    const generateSlug = (name: string) => {
+        return name
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^\w\s-]/g, "")
+            .replace(/\s+/g, "-")
+            .replace(/-+/g, "-")
+            .replace(/^-+|-+$/g, "")
+            .trim();
+    };
+
+    // Fetch existing category for editing
     useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const response = await fetch(
-                    "/api/categories?published=true&limit=100"
-                );
-                if (response.ok) {
-                    const data = await response.json();
-                    setCategories(data.data?.categories || []);
-                }
-            } catch (error) {
-                console.error("Error fetching categories:", error);
-            }
-        };
+        if (!isEditing || !categoryId) return;
 
-        fetchCategories();
-    }, []);
-
-    // Fetch existing flashcard for editing
-    useEffect(() => {
-        if (!isEditing || !flashcardId) return;
-
-        const fetchFlashcard = async () => {
+        const fetchCategory = async () => {
             try {
                 setIsInitialLoading(true);
-                const response = await fetch(`/api/flashcards/${flashcardId}`);
+                const response = await fetch(`/api/categories/${categoryId}`);
 
                 if (!response.ok) {
-                    throw new Error("Flashcard not found");
+                    throw new Error("Category not found");
                 }
 
                 const data = await response.json();
-                const flashcardData = data.data;
+                const categoryData = data.data;
                 setFormData({
-                    question: flashcardData.question,
-                    answer: flashcardData.answer,
-                    categoryIds: flashcardData.categoryIds.map(
-                        (cat: any) => cat._id || cat
-                    ),
-                    isPublished: flashcardData.isPublished,
+                    name: categoryData.name,
+                    description: categoryData.description,
+                    slug: categoryData.slug,
+                    isPublished: categoryData.isPublished,
                 });
             } catch (error) {
-                console.error("Error fetching flashcard:", error);
+                console.error("Error fetching category:", error);
                 toast({
                     title: "Erro",
-                    description: "Não foi possível carregar o flashcard.",
+                    description: "Não foi possível carregar a categoria.",
                     variant: "destructive",
                 });
-                router.push("/admin/flashcards");
+                router.push("/admin/categories");
             } finally {
                 setIsInitialLoading(false);
             }
         };
 
-        fetchFlashcard();
-    }, [isEditing, flashcardId, toast, router]);
+        fetchCategory();
+    }, [isEditing, categoryId, toast, router]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -114,8 +98,8 @@ export default function FlashcardForm({
 
         try {
             const url = isEditing
-                ? `/api/flashcards/${flashcardId}`
-                : "/api/flashcards";
+                ? `/api/categories/${categoryId}`
+                : "/api/categories";
 
             const method = isEditing ? "PUT" : "POST";
 
@@ -131,29 +115,35 @@ export default function FlashcardForm({
 
             if (!response.ok) {
                 if (data.errors) {
-                    setErrors(data.errors);
+                    const formErrors: Record<string, string> = {};
+                    data.errors.forEach(
+                        (error: { field: string; message: string }) => {
+                            formErrors[error.field] = error.message;
+                        }
+                    );
+                    setErrors(formErrors);
                     return;
                 }
-                throw new Error(data.message || "Failed to save flashcard");
+                throw new Error(data.message || "Failed to save category");
             }
 
             toast({
                 title: "Sucesso",
-                description: `Flashcard ${
-                    isEditing ? "atualizado" : "criado"
+                description: `Categoria ${
+                    isEditing ? "atualizada" : "criada"
                 } com sucesso.`,
             });
 
-            router.push("/admin/flashcards");
+            router.push("/admin/categories");
         } catch (error: any) {
-            console.error("Error saving flashcard:", error);
+            console.error("Error saving category:", error);
             toast({
                 title: "Erro",
                 description:
                     error.message ||
                     `Não foi possível ${
                         isEditing ? "atualizar" : "criar"
-                    } o flashcard.`,
+                    } a categoria.`,
                 variant: "destructive",
             });
         } finally {
@@ -161,11 +151,20 @@ export default function FlashcardForm({
         }
     };
 
-    const handleChange = (field: keyof FlashcardFormData, value: any) => {
+    const handleChange = (field: keyof CategoryFormData, value: any) => {
         setFormData((prev) => ({
             ...prev,
             [field]: value,
         }));
+
+        // Auto-generate slug when name changes
+        if (field === "name" && !isEditing) {
+            setFormData((prev) => ({
+                ...prev,
+                name: value,
+                slug: generateSlug(value),
+            }));
+        }
 
         // Clear error when user starts typing
         if (errors[field]) {
@@ -181,7 +180,7 @@ export default function FlashcardForm({
             <div className="space-y-6">
                 <div className="h-8 bg-gray-200 rounded animate-pulse" />
                 <div className="h-10 bg-gray-200 rounded animate-pulse" />
-                <div className="h-64 bg-gray-200 rounded animate-pulse" />
+                <div className="h-32 bg-gray-200 rounded animate-pulse" />
             </div>
         );
     }
@@ -191,63 +190,76 @@ export default function FlashcardForm({
             {/* Header */}
             <div className="flex items-center gap-4 mb-6">
                 <Button variant="outline" size="icon" asChild>
-                    <Link href="/admin/flashcards">
+                    <Link href="/admin/categories">
                         <ArrowLeft className="h-4 w-4" />
                     </Link>
                 </Button>
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900">
-                        {isEditing ? "Editar Flashcard" : "Novo Flashcard"}
+                        {isEditing ? "Editar Categoria" : "Nova Categoria"}
                     </h1>
                     <p className="text-gray-600">
                         {isEditing
-                            ? "Atualize o flashcard"
-                            : "Crie um novo flashcard para memorização"}
+                            ? "Atualize os dados da categoria"
+                            : "Crie uma nova categoria de matemática"}
                     </p>
                 </div>
             </div>
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Question */}
+                {/* Name */}
                 <div>
-                    <Label htmlFor="question">Pergunta *</Label>
+                    <Label htmlFor="name">Nome *</Label>
                     <Input
-                        id="question"
-                        value={formData.question}
-                        onChange={(e) =>
-                            handleChange("question", e.target.value)
-                        }
-                        placeholder="Digite a pergunta do flashcard..."
-                        className={errors.question ? "border-red-500" : ""}
+                        id="name"
+                        value={formData.name}
+                        onChange={(e) => handleChange("name", e.target.value)}
+                        placeholder="Digite o nome da categoria..."
+                        className={errors.name ? "border-red-500" : ""}
                     />
-                    {errors.question && (
+                    {errors.name && (
                         <p className="text-sm text-red-600 mt-1">
-                            {errors.question}
+                            {errors.name}
                         </p>
                     )}
                 </div>
 
-                {/* Categories */}
+                {/* Description */}
                 <div>
-                    <Label>Categorias *</Label>
-                    <CategorySelector
-                        categories={categories}
-                        selectedIds={formData.categoryIds}
-                        onChange={(ids) => handleChange("categoryIds", ids)}
-                        error={errors.categoryIds}
+                    <Label htmlFor="description">Descrição *</Label>
+                    <Textarea
+                        id="description"
+                        value={formData.description}
+                        onChange={(e) => handleChange("description", e.target.value)}
+                        placeholder="Digite a descrição da categoria..."
+                        className={errors.description ? "border-red-500" : ""}
                     />
+                    {errors.description && (
+                        <p className="text-sm text-red-600 mt-1">
+                            {errors.description}
+                        </p>
+                    )}
                 </div>
 
-                {/* Answer */}
+                {/* Slug */}
                 <div>
-                    <Label>Resposta *</Label>
-                    <MarkdownEditor
-                        value={formData.answer}
-                        onChange={(answer) => handleChange("answer", answer)}
-                        placeholder="Digite a resposta do flashcard..."
-                        error={errors.answer}
+                    <Label htmlFor="slug">Slug *</Label>
+                    <Input
+                        id="slug"
+                        value={formData.slug}
+                        onChange={(e) => handleChange("slug", e.target.value)}
+                        placeholder="slug-da-categoria"
+                        className={errors.slug ? "border-red-500" : ""}
                     />
+                    <p className="text-sm text-gray-500 mt-1">
+                        URL amigável da categoria. Gerada automaticamente, mas pode ser editada.
+                    </p>
+                    {errors.slug && (
+                        <p className="text-sm text-red-600 mt-1">
+                            {errors.slug}
+                        </p>
+                    )}
                 </div>
 
                 {/* Published */}
@@ -271,11 +283,11 @@ export default function FlashcardForm({
                                 ? "Atualizando..."
                                 : "Criando..."
                             : isEditing
-                            ? "Atualizar Flashcard"
-                            : "Criar Flashcard"}
+                            ? "Atualizar Categoria"
+                            : "Criar Categoria"}
                     </Button>
                     <Button variant="outline" asChild>
-                        <Link href="/admin/flashcards">Cancelar</Link>
+                        <Link href="/admin/categories">Cancelar</Link>
                     </Button>
                 </div>
             </form>
