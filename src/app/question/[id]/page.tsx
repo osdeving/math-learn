@@ -1,27 +1,11 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
 import InteractiveQuestion from "@/components/InteractiveQuestion";
+import { MarkdownRenderer } from "@/components/MarkdownRenderer";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, BookOpen, Calendar } from "lucide-react";
-import dynamic from "next/dynamic";
 import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-
-// Dynamic import to avoid SSR issues with KaTeX
-const MarkdownRenderer = dynamic(
-    () => import("@/components/MarkdownRenderer"),
-    {
-        ssr: false,
-        loading: () => <div className="animate-pulse h-4 bg-gray-200 rounded" />,
-    }
-);
 
 interface Question {
     _id: string;
@@ -127,7 +111,10 @@ export default async function QuestionPage({
                                     </CardTitle>
                                     <div className="flex items-center gap-4 text-sm text-gray-600">
                                         <div className="flex items-center">
-                                            <Calendar size={14} className="mr-1" />
+                                            <Calendar
+                                                size={14}
+                                                className="mr-1"
+                                            />
                                             {formatDate(question.createdAt)}
                                         </div>
                                         <div className="flex items-center gap-2">
@@ -142,7 +129,10 @@ export default async function QuestionPage({
                                         </div>
                                     </div>
                                 </div>
-                                <BookOpen className="text-orange-500" size={24} />
+                                <BookOpen
+                                    className="text-orange-500"
+                                    size={24}
+                                />
                             </div>
                         </CardHeader>
                     </Card>
@@ -156,7 +146,9 @@ export default async function QuestionPage({
                         </CardHeader>
                         <CardContent>
                             <div className="prose prose-blue max-w-none">
-                                <MarkdownRenderer content={question.statement} />
+                                <MarkdownRenderer
+                                    content={question.statement}
+                                />
                             </div>
                         </CardContent>
                     </Card>

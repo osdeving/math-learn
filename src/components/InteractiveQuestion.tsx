@@ -1,6 +1,5 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -15,10 +14,12 @@ import { useState } from "react";
 
 // Dynamic import to avoid SSR issues with KaTeX
 const MarkdownRenderer = dynamic(
-    () => import("@/components/MarkdownRenderer"),
+    () => import("@/components/MarkdownRenderer").then(mod => ({ default: mod.MarkdownRenderer })),
     {
         ssr: false,
-        loading: () => <div className="animate-pulse h-4 bg-gray-200 rounded" />,
+        loading: () => (
+            <div className="animate-pulse h-4 bg-gray-200 rounded" />
+        ),
     }
 );
 
@@ -88,7 +89,9 @@ export default function InteractiveQuestion({
                             alternative={alternative}
                             index={index}
                             isSelected={selectedAnswer === index}
-                            onSelect={() => !hasAnswered && setSelectedAnswer(index)}
+                            onSelect={() =>
+                                !hasAnswered && setSelectedAnswer(index)
+                            }
                             showResult={showResult}
                             isCorrect={index === question.correctAnswer}
                             disabled={hasAnswered}
@@ -126,18 +129,31 @@ export default function InteractiveQuestion({
                             </CardHeader>
                             <CardContent>
                                 <div className="prose prose-blue prose-sm max-w-none">
-                                    <MarkdownRenderer content={question.explanation} />
+                                    <MarkdownRenderer
+                                        content={question.explanation}
+                                    />
                                 </div>
                                 <div className="mt-4 p-3 bg-green-50 rounded-lg">
                                     <div className="flex items-center text-sm text-green-800">
-                                        <CheckCircle size={16} className="mr-2" />
+                                        <CheckCircle
+                                            size={16}
+                                            className="mr-2"
+                                        />
                                         <span className="font-medium">
-                                            Resposta correta: {String.fromCharCode(65 + question.correctAnswer)}) 
+                                            Resposta correta:{" "}
+                                            {String.fromCharCode(
+                                                65 + question.correctAnswer
+                                            )}
+                                            )
                                         </span>
                                     </div>
                                     <div className="mt-2 text-sm text-green-700">
-                                        <MarkdownRenderer 
-                                            content={question.alternatives[question.correctAnswer].text} 
+                                        <MarkdownRenderer
+                                            content={
+                                                question.alternatives[
+                                                    question.correctAnswer
+                                                ].text
+                                            }
                                         />
                                     </div>
                                 </div>
@@ -189,7 +205,9 @@ function AlternativeCard({
 
     const getIconStyle = () => {
         if (!showResult) {
-            return isSelected ? "bg-blue-500 text-white" : "bg-blue-100 text-blue-800";
+            return isSelected
+                ? "bg-blue-500 text-white"
+                : "bg-blue-100 text-blue-800";
         }
 
         if (isCorrect) {
@@ -222,7 +240,10 @@ function AlternativeCard({
                     </div>
                 </div>
                 {showResult && isCorrect && (
-                    <CheckCircle className="text-green-500 flex-shrink-0" size={20} />
+                    <CheckCircle
+                        className="text-green-500 flex-shrink-0"
+                        size={20}
+                    />
                 )}
                 {showResult && isSelected && !isCorrect && (
                     <XCircle className="text-red-500 flex-shrink-0" size={20} />

@@ -441,7 +441,7 @@ function ContentCard({
                             </Button>
                         </Link>
                     )}
-                    
+
                     {type === "question" && (
                         <Link href={`/question/${item._id}`}>
                             <Button
