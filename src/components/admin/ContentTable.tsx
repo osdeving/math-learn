@@ -83,99 +83,106 @@ export default function ContentTable({
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {items && items.map((item) => (
-                        <TableRow key={item._id}>
-                            <TableCell className="font-medium">
-                                <Link
-                                    href={`${basePath}/${item._id}`}
-                                    className="hover:underline"
-                                >
-                                    {item.title}
-                                </Link>
-                            </TableCell>
-                            <TableCell>
-                                <div className="flex flex-wrap gap-1">
-                                    {item.categoryIds && item.categoryIds.length > 0 && item.categoryIds.map((category) => (
-                                        <Badge
-                                            key={category.slug}
-                                            variant="secondary"
-                                            className="text-xs"
-                                        >
-                                            {category.name}
-                                        </Badge>
-                                    ))}
-                                </div>
-                            </TableCell>
-                            <TableCell>
-                                <Badge
-                                    variant={
-                                        item.isPublished
-                                            ? "default"
-                                            : "secondary"
-                                    }
-                                >
-                                    {item.isPublished
-                                        ? "Publicado"
-                                        : "Rascunho"}
-                                </Badge>
-                            </TableCell>
-                            <TableCell>{formatDate(item.createdAt)}</TableCell>
-                            <TableCell>{formatDate(item.updatedAt)}</TableCell>
-                            <TableCell>
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button variant="ghost" size="icon">
-                                            <MoreHorizontal className="h-4 w-4" />
-                                        </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end">
-                                        <DropdownMenuItem asChild>
-                                            <Link
-                                                href={`${basePath}/${item._id}`}
-                                            >
-                                                <Edit className="mr-2 h-4 w-4" />
-                                                Editar
-                                            </Link>
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem asChild>
-                                            <Link
-                                                href={`${basePath}/${item._id}/preview`}
-                                            >
-                                                <Eye className="mr-2 h-4 w-4" />
-                                                Preview
-                                            </Link>
-                                        </DropdownMenuItem>
-                                        {onTogglePublish && (
-                                            <DropdownMenuItem
-                                                onClick={() =>
-                                                    onTogglePublish(
-                                                        item._id,
-                                                        !item.isPublished
-                                                    )
-                                                }
-                                            >
-                                                {item.isPublished
-                                                    ? "Despublicar"
-                                                    : "Publicar"}
+                    {items &&
+                        items.map((item) => (
+                            <TableRow key={item._id}>
+                                <TableCell className="font-medium">
+                                    <Link
+                                        href={`${basePath}/${item._id}`}
+                                        className="hover:underline"
+                                    >
+                                        {item.title}
+                                    </Link>
+                                </TableCell>
+                                <TableCell>
+                                    <div className="flex flex-wrap gap-1">
+                                        {item.categoryIds &&
+                                            item.categoryIds.length > 0 &&
+                                            item.categoryIds.map((category) => (
+                                                <Badge
+                                                    key={category.slug}
+                                                    variant="secondary"
+                                                    className="text-xs"
+                                                >
+                                                    {category.name}
+                                                </Badge>
+                                            ))}
+                                    </div>
+                                </TableCell>
+                                <TableCell>
+                                    <Badge
+                                        variant={
+                                            item.isPublished
+                                                ? "default"
+                                                : "secondary"
+                                        }
+                                    >
+                                        {item.isPublished
+                                            ? "Publicado"
+                                            : "Rascunho"}
+                                    </Badge>
+                                </TableCell>
+                                <TableCell>
+                                    {formatDate(item.createdAt)}
+                                </TableCell>
+                                <TableCell>
+                                    {formatDate(item.updatedAt)}
+                                </TableCell>
+                                <TableCell>
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button variant="ghost" size="icon">
+                                                <MoreHorizontal className="h-4 w-4" />
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end">
+                                            <DropdownMenuItem asChild>
+                                                <Link
+                                                    href={`${basePath}/${item._id}`}
+                                                >
+                                                    <Edit className="mr-2 h-4 w-4" />
+                                                    Editar
+                                                </Link>
                                             </DropdownMenuItem>
-                                        )}
-                                        <DropdownMenuSeparator />
-                                        {onDelete && (
-                                            <DropdownMenuItem
-                                                onClick={() =>
-                                                    onDelete(item._id)
-                                                }
-                                                className="text-red-600"
-                                            >
-                                                <Trash2 className="mr-2 h-4 w-4" />
-                                                Excluir
+                                            <DropdownMenuItem asChild>
+                                                <Link
+                                                    href={`${basePath}/${item._id}/preview`}
+                                                >
+                                                    <Eye className="mr-2 h-4 w-4" />
+                                                    Preview
+                                                </Link>
                                             </DropdownMenuItem>
-                                        )}
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </TableCell>
-                        </TableRow>
-                    ))}
+                                            {onTogglePublish && (
+                                                <DropdownMenuItem
+                                                    onClick={() =>
+                                                        onTogglePublish(
+                                                            item._id,
+                                                            !item.isPublished
+                                                        )
+                                                    }
+                                                >
+                                                    {item.isPublished
+                                                        ? "Despublicar"
+                                                        : "Publicar"}
+                                                </DropdownMenuItem>
+                                            )}
+                                            <DropdownMenuSeparator />
+                                            {onDelete && (
+                                                <DropdownMenuItem
+                                                    onClick={() =>
+                                                        onDelete(item._id)
+                                                    }
+                                                    className="text-red-600"
+                                                >
+                                                    <Trash2 className="mr-2 h-4 w-4" />
+                                                    Excluir
+                                                </DropdownMenuItem>
+                                            )}
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </TableCell>
+                            </TableRow>
+                        ))}
                 </TableBody>
             </Table>
         </div>

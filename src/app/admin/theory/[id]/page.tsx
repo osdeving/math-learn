@@ -1,3 +1,5 @@
+"use client";
+
 import TheoryForm from "@/components/admin/TheoryForm";
 
 interface EditTheoryPageProps {

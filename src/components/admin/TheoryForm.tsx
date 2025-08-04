@@ -58,7 +58,7 @@ export default function TheoryForm({
                 );
                 if (response.ok) {
                     const data = await response.json();
-                    setCategories(data.categories || []);
+                    setCategories(data.data?.categories || []);
                 }
             } catch (error) {
                 console.error("Error fetching categories:", error);
@@ -82,13 +82,14 @@ export default function TheoryForm({
                 }
 
                 const data = await response.json();
+                const theoryData = data.data;
                 setFormData({
-                    title: data.title,
-                    content: data.content,
-                    categoryIds: data.categoryIds.map(
+                    title: theoryData.title,
+                    content: theoryData.content,
+                    categoryIds: theoryData.categoryIds.map(
                         (cat: any) => cat._id || cat
                     ),
-                    isPublished: data.isPublished,
+                    isPublished: theoryData.isPublished,
                 });
             } catch (error) {
                 console.error("Error fetching theory:", error);

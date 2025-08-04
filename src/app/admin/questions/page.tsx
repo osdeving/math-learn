@@ -58,8 +58,15 @@ export default function QuestionsListPage() {
             }
 
             const data = await response.json();
-            setQuestions(data.questions);
-            setPagination(data.pagination);
+            setQuestions(data.data?.questions || []);
+            setPagination(
+                data.data?.pagination || {
+                    current: 1,
+                    total: 1,
+                    count: 0,
+                    totalCount: 0,
+                }
+            );
         } catch (error) {
             console.error("Error fetching questions:", error);
             toast({
@@ -80,7 +87,7 @@ export default function QuestionsListPage() {
             if (!response.ok) return;
 
             const data = await response.json();
-            setCategories(data.categories || []);
+            setCategories(data.data?.categories || []);
         } catch (error) {
             console.error("Error fetching categories:", error);
         }

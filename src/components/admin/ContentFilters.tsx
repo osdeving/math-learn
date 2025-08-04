@@ -113,11 +113,13 @@ export default function ContentFilters({
                 </SelectTrigger>
                 <SelectContent>
                     <SelectItem value="all">Todas as categorias</SelectItem>
-                    {categories && categories.length > 0 && categories.map((category) => (
-                        <SelectItem key={category._id} value={category._id}>
-                            {category.name}
-                        </SelectItem>
-                    ))}
+                    {categories &&
+                        categories.length > 0 &&
+                        categories.map((category) => (
+                            <SelectItem key={category._id} value={category._id}>
+                                {category.name}
+                            </SelectItem>
+                        ))}
                 </SelectContent>
             </Select>
 

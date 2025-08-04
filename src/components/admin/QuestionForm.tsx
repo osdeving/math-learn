@@ -77,7 +77,7 @@ export default function QuestionForm({
                 );
                 if (response.ok) {
                     const data = await response.json();
-                    setCategories(data.categories || []);
+                    setCategories(data.data?.categories || []);
                 }
             } catch (error) {
                 console.error("Error fetching categories:", error);
@@ -101,16 +101,17 @@ export default function QuestionForm({
                 }
 
                 const data = await response.json();
+                const questionData = data.data;
                 setFormData({
-                    title: data.title,
-                    statement: data.statement,
-                    alternatives: data.alternatives,
-                    correctAnswer: data.correctAnswer,
-                    explanation: data.explanation,
-                    categoryIds: data.categoryIds.map(
+                    title: questionData.title,
+                    statement: questionData.statement,
+                    alternatives: questionData.alternatives,
+                    correctAnswer: questionData.correctAnswer,
+                    explanation: questionData.explanation,
+                    categoryIds: questionData.categoryIds.map(
                         (cat: any) => cat._id || cat
                     ),
-                    isPublished: data.isPublished,
+                    isPublished: questionData.isPublished,
                 });
             } catch (error) {
                 console.error("Error fetching question:", error);
