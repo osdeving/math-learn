@@ -71,27 +71,28 @@
 
 ```json
 {
-  "mcpServers": {
-    "MongoDB": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "mongodb-mcp-server",
-        "--connectionString",
-        "mongodb+srv://admin:senha@cluster.mongodb.net/math-learn",
-        "--readOnly"
-      ]
+    "mcpServers": {
+        "MongoDB": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "mongodb-mcp-server",
+                "--connectionString",
+                "mongodb+srv://admin:senha@cluster.mongodb.net/math-learn",
+                "--readOnly"
+            ]
+        }
     }
-  }
 }
 ```
 
 **Funcionalidades do MCP:**
-- 🔍 Consultas naturais ao banco
-- 📊 Análise de dados inteligente  
-- 🛠️ Operações CRUD via IA
-- 📈 Estatísticas e métricas
-- 🔗 Integração direta com Atlas
+
+-   🔍 Consultas naturais ao banco
+-   📊 Análise de dados inteligente
+-   🛠️ Operações CRUD via IA
+-   📈 Estatísticas e métricas
+-   🔗 Integração direta com Atlas
 
 ### ✅ **Opção 2: Alternativas Gratuitas**
 

@@ -1,0 +1,100 @@
+// Inserir dados de exemplo no MongoDB Atlas
+// Use o comando: npx mongosh "SUA_CONNECTION_STRING" < populate_atlas.js
+
+// Inserir categorias
+db.categories.insertMany([
+    {
+        name: "Álgebra",
+        description: "Estudo de estruturas matemáticas abstratas",
+        color: "#3B82F6",
+        createdAt: new Date(),
+    },
+    {
+        name: "Combinatória",
+        description: "Análise combinatória e contagem",
+        color: "#10B981",
+        createdAt: new Date(),
+    },
+    {
+        name: "Geometria",
+        description: "Estudo das formas e espaços",
+        color: "#F59E0B",
+        createdAt: new Date(),
+    },
+]);
+
+// Inserir teorias
+db.theories.insertMany([
+    {
+        title: "Equações do Segundo Grau",
+        content:
+            "Uma equação do segundo grau é expressa na forma $ax^2 + bx + c = 0$",
+        category: "Álgebra",
+        published: true,
+        createdAt: new Date(),
+    },
+    {
+        title: "Princípio Fundamental da Contagem",
+        content:
+            "Se um evento pode ocorrer de $n$ maneiras e outro de $m$ maneiras...",
+        category: "Combinatória",
+        published: true,
+        createdAt: new Date(),
+    },
+]);
+
+// Inserir questões
+db.questions.insertMany([
+    {
+        question: "Qual é a raiz da equação $x^2 - 5x + 6 = 0$?",
+        alternatives: [
+            "x = 2 ou x = 3",
+            "x = 1 ou x = 6",
+            "x = -2 ou x = -3",
+            "x = 0 ou x = 5",
+            "x = 1 ou x = 4",
+        ],
+        correctAnswer: 0,
+        explanation:
+            "Usando a fórmula de Bhaskara ou fatoração: $(x-2)(x-3) = 0$",
+        category: "Álgebra",
+        difficulty: "medium",
+        published: true,
+        createdAt: new Date(),
+    },
+    {
+        question: "De quantas maneiras 5 pessoas podem se sentar em uma fila?",
+        alternatives: ["120", "25", "10", "60", "720"],
+        correctAnswer: 0,
+        explanation: "Permutação simples: $P_5 = 5! = 120$",
+        category: "Combinatória",
+        difficulty: "easy",
+        published: true,
+        createdAt: new Date(),
+    },
+]);
+
+// Inserir flashcards
+db.flashcards.insertMany([
+    {
+        question: "O que é o discriminante de uma equação do segundo grau?",
+        answer: "É $\\Delta = b^2 - 4ac$, usado na fórmula de Bhaskara",
+        category: "Álgebra",
+        published: true,
+        createdAt: new Date(),
+    },
+    {
+        question: "Qual a fórmula da permutação simples?",
+        answer: "$P_n = n!$ (n fatorial)",
+        category: "Combinatória",
+        published: true,
+        createdAt: new Date(),
+    },
+]);
+
+print("✅ Dados inseridos no MongoDB Atlas com sucesso!");
+print("📊 Estatísticas:");
+print("- Categorias:", db.categories.countDocuments());
+print("- Teorias:", db.theories.countDocuments());
+print("- Questões:", db.questions.countDocuments());
+print("- Flashcards:", db.flashcards.countDocuments());

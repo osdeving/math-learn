@@ -11,28 +11,30 @@ A MongoDB criou um servidor MCP oficial que permite interação direta com Mongo
 ### ✅ **Recursos Disponíveis:**
 
 #### 🗄️ **MongoDB Database Tools**
-- `connect` - Conectar a uma instância MongoDB
-- `find` - Executar consultas de busca
-- `aggregate` - Executar agregações complexas
-- `count` - Contar documentos
-- `insert-one/many` - Inserir documentos
-- `update-one/many` - Atualizar documentos
-- `delete-one/many` - Deletar documentos
-- `create-index` - Criar índices
-- `list-databases` - Listar bancos de dados
-- `list-collections` - Listar coleções
-- `collection-schema` - Analisar esquema das coleções
-- `db-stats` - Estatísticas do banco
+
+-   `connect` - Conectar a uma instância MongoDB
+-   `find` - Executar consultas de busca
+-   `aggregate` - Executar agregações complexas
+-   `count` - Contar documentos
+-   `insert-one/many` - Inserir documentos
+-   `update-one/many` - Atualizar documentos
+-   `delete-one/many` - Deletar documentos
+-   `create-index` - Criar índices
+-   `list-databases` - Listar bancos de dados
+-   `list-collections` - Listar coleções
+-   `collection-schema` - Analisar esquema das coleções
+-   `db-stats` - Estatísticas do banco
 
 #### ☁️ **MongoDB Atlas Tools**
-- `atlas-list-orgs` - Listar organizações
-- `atlas-list-projects` - Listar projetos
-- `atlas-create-project` - Criar projetos
-- `atlas-list-clusters` - Listar clusters
-- `atlas-create-free-cluster` - Criar cluster gratuito
-- `atlas-connect-cluster` - Conectar ao cluster
-- `atlas-list-db-users` - Gerenciar usuários
-- `atlas-create-db-user` - Criar usuários
+
+-   `atlas-list-orgs` - Listar organizações
+-   `atlas-list-projects` - Listar projetos
+-   `atlas-create-project` - Criar projetos
+-   `atlas-list-clusters` - Listar clusters
+-   `atlas-create-free-cluster` - Criar cluster gratuito
+-   `atlas-connect-cluster` - Conectar ao cluster
+-   `atlas-list-db-users` - Gerenciar usuários
+-   `atlas-create-db-user` - Criar usuários
 
 ## 📋 **Configuração para o Math Learn Project**
 
@@ -42,18 +44,18 @@ Adicione no arquivo de configuração do MCP:
 
 ```json
 {
-  "mcpServers": {
-    "MongoDB": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "mongodb-mcp-server",
-        "--connectionString",
-        "mongodb+srv://admin:SUA_SENHA@math-learn-cluster.xxxxx.mongodb.net/math-learn",
-        "--readOnly"
-      ]
+    "mcpServers": {
+        "MongoDB": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "mongodb-mcp-server",
+                "--connectionString",
+                "mongodb+srv://admin:SUA_SENHA@math-learn-cluster.xxxxx.mongodb.net/math-learn",
+                "--readOnly"
+            ]
+        }
     }
-  }
 }
 ```
 
@@ -61,19 +63,15 @@ Adicione no arquivo de configuração do MCP:
 
 ```json
 {
-  "mcpServers": {
-    "mongodb": {
-      "command": "npx",
-      "args": [
-        "-y", 
-        "mongodb-mcp-server@latest",
-        "--readOnly"
-      ],
-      "env": {
-        "MDB_MCP_CONNECTION_STRING": "mongodb+srv://admin:senha@cluster.mongodb.net/math-learn"
-      }
+    "mcpServers": {
+        "mongodb": {
+            "command": "npx",
+            "args": ["-y", "mongodb-mcp-server@latest", "--readOnly"],
+            "env": {
+                "MDB_MCP_CONNECTION_STRING": "mongodb+srv://admin:senha@cluster.mongodb.net/math-learn"
+            }
+        }
     }
-  }
 }
 ```
 
@@ -83,19 +81,20 @@ Adicione nas configurações MCP do Cursor:
 
 ```json
 {
-  "mongodb": {
-    "command": "mongodb-mcp-server",
-    "args": ["--readOnly"],
-    "env": {
-      "MDB_MCP_CONNECTION_STRING": "mongodb+srv://admin:senha@cluster.mongodb.net/math-learn"
+    "mongodb": {
+        "command": "mongodb-mcp-server",
+        "args": ["--readOnly"],
+        "env": {
+            "MDB_MCP_CONNECTION_STRING": "mongodb+srv://admin:senha@cluster.mongodb.net/math-learn"
+        }
     }
-  }
 }
 ```
 
 ## 🎯 **Casos de Uso para o Math Learn**
 
 ### 📊 **Análise de Dados**
+
 ```
 "Quantas questões temos por categoria?"
 "Qual a média de acertos nas questões de Cálculo?"
@@ -103,6 +102,7 @@ Adicione nas configurações MCP do Cursor:
 ```
 
 ### 🔍 **Consultas Inteligentes**
+
 ```
 "Encontre questões de Álgebra Linear com dificuldade alta"
 "Liste os flashcards que precisam de revisão"
@@ -110,6 +110,7 @@ Adicione nas configurações MCP do Cursor:
 ```
 
 ### 📈 **Relatórios Automáticos**
+
 ```
 "Gere um relatório de uso da plataforma"
 "Analise o desempenho dos estudantes por categoria"
@@ -117,6 +118,7 @@ Adicione nas configurações MCP do Cursor:
 ```
 
 ### 🛠️ **Operações de Dados**
+
 ```
 "Crie uma nova categoria chamada 'Estatística Avançada'"
 "Atualize todas as questões sem explicação"
@@ -126,6 +128,7 @@ Adicione nas configurações MCP do Cursor:
 ## 🔧 **Configuração de Segurança**
 
 ### **Modo Somente Leitura (Recomendado)**
+
 Use `--readOnly` para evitar modificações acidentais:
 
 ```bash
@@ -133,6 +136,7 @@ Use `--readOnly` para evitar modificações acidentais:
 ```
 
 ### **Ferramentas Desabilitadas**
+
 Desabilite operações específicas:
 
 ```bash
@@ -140,6 +144,7 @@ Desabilite operações específicas:
 ```
 
 ### **Verificação de Índices**
+
 Force uso de índices:
 
 ```bash
@@ -149,6 +154,7 @@ Force uso de índices:
 ## 📚 **Exemplos Práticos**
 
 ### **Consulta Natural**
+
 ```
 IA: "Mostre as 5 questões mais difíceis de Cálculo"
 
@@ -160,6 +166,7 @@ db.questions.find({
 ```
 
 ### **Análise de Performance**
+
 ```
 IA: "Qual categoria tem mais conteúdo?"
 
@@ -174,16 +181,18 @@ db.questions.aggregate([
 ## 🎉 **Vantagens do MCP**
 
 ### ✅ **Para Desenvolvedores**
-- Consultas em linguagem natural
-- Análise rápida de dados
-- Debug inteligente
-- Relatórios automáticos
+
+-   Consultas em linguagem natural
+-   Análise rápida de dados
+-   Debug inteligente
+-   Relatórios automáticos
 
 ### ✅ **Para o Projeto Math Learn**
-- Análise de engajamento dos usuários
-- Identificação de gaps de conteúdo
-- Otimização de performance
-- Insights de uso da plataforma
+
+-   Análise de engajamento dos usuários
+-   Identificação de gaps de conteúdo
+-   Otimização de performance
+-   Insights de uso da plataforma
 
 ## 🚀 **Como Ativar**
 
