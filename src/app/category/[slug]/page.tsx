@@ -441,6 +441,19 @@ function ContentCard({
                             </Button>
                         </Link>
                     )}
+                    
+                    {type === "question" && (
+                        <Link href={`/question/${item._id}`}>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className="ml-2"
+                            >
+                                <HelpCircle size={14} className="mr-1" />
+                                Responder
+                            </Button>
+                        </Link>
+                    )}
                 </div>
             </CardContent>
         </Card>
