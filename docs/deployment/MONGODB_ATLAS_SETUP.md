@@ -10,30 +10,33 @@
 
 1. **Dashboard → Create a Deployment**
 2. **Escolher M0 (FREE)**:
-   - Shared Clusters
-   - M0 Sandbox (512 MB gratuito)
-   - Provider: AWS ou GCP
-   - Region: us-east-1 (Virginia) - mais próximo do Vercel
+
+    - Shared Clusters
+    - M0 Sandbox (512 MB gratuito)
+    - Provider: AWS ou GCP
+    - Region: us-east-1 (Virginia) - mais próximo do Vercel
 
 3. **Configurações**:
-   - Cluster Name: `math-learn-cluster`
-   - Clique em "Create Deployment"
+    - Cluster Name: `math-learn-cluster`
+    - Clique em "Create Deployment"
 
 ## 3. Configurar Segurança
 
 ### Database User
+
 1. **Security → Database Access**
 2. **Add New Database User**:
-   - Username: `admin`
-   - Password: Gerar senha forte (salvar!)
-   - Database: `admin`
-   - Roles: `Read and write to any database`
+    - Username: `admin`
+    - Password: Gerar senha forte (salvar!)
+    - Database: `admin`
+    - Roles: `Read and write to any database`
 
-### Network Access  
+### Network Access
+
 1. **Security → Network Access**
 2. **Add IP Address**:
-   - **0.0.0.0/0** (permite acesso do Vercel)
-   - Comment: "Vercel deployment"
+    - **0.0.0.0/0** (permite acesso do Vercel)
+    - Comment: "Vercel deployment"
 
 ## 4. Obter Connection String
 
@@ -51,6 +54,7 @@ mongodb+srv://admin:<password>@math-learn-cluster.xxxxx.mongodb.net/?retryWrites
 ## 5. Configurar no Vercel
 
 ### Variáveis de Ambiente:
+
 ```bash
 MONGODB_URI=mongodb+srv://admin:SUA_SENHA_AQUI@math-learn-cluster.xxxxx.mongodb.net/?retryWrites=true&w=majority
 MONGODB_DB=math-learn
@@ -70,20 +74,20 @@ npm run dev
 
 ## 🎯 Checklist Final
 
-- [ ] Conta MongoDB Atlas criada
-- [ ] Cluster M0 (gratuito) criado
-- [ ] Usuário do banco configurado  
-- [ ] Network access liberado (0.0.0.0/0)
-- [ ] Connection string copiada
-- [ ] Variáveis configuradas no Vercel
-- [ ] Deploy testado
+-   [ ] Conta MongoDB Atlas criada
+-   [ ] Cluster M0 (gratuito) criado
+-   [ ] Usuário do banco configurado
+-   [ ] Network access liberado (0.0.0.0/0)
+-   [ ] Connection string copiada
+-   [ ] Variáveis configuradas no Vercel
+-   [ ] Deploy testado
 
 ## 💡 Dicas
 
-- **Backup**: Atlas faz backup automático
-- **Monitoramento**: Dashboard mostra uso em tempo real  
-- **Upgrade**: Se precisar, pode upgradear para M2/M5
-- **Múltiplos ambientes**: Pode criar clusters para dev/prod
+-   **Backup**: Atlas faz backup automático
+-   **Monitoramento**: Dashboard mostra uso em tempo real
+-   **Upgrade**: Se precisar, pode upgradear para M2/M5
+-   **Múltiplos ambientes**: Pode criar clusters para dev/prod
 
 ---
 

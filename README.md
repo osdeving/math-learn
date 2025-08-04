@@ -45,45 +45,79 @@
 ### ✅ **Opção 1: MongoDB Atlas (Recomendada - GRATUITA)**
 
 1. **Criar conta no MongoDB Atlas**
-   - Acesse: [atlas.mongodb.com](https://atlas.mongodb.com)
-   - Crie conta gratuita
+
+    - Acesse: [atlas.mongodb.com](https://atlas.mongodb.com)
+    - Crie conta gratuita
 
 2. **Criar cluster gratuito**
-   - Escolha "M0 Sandbox" (512MB gratuito)
-   - Região: Escolha mais próxima (ex: Virginia us-east-1)
-   - Nome: `math-learn-cluster`
+
+    - Escolha "M0 Sandbox" (512MB gratuito)
+    - Região: Escolha mais próxima (ex: Virginia us-east-1)
+    - Nome: `math-learn-cluster`
 
 3. **Configurar acesso**
-   - Database Access → Add User (ex: `admin` / senha forte)
-   - Network Access → Add IP (0.0.0.0/0 para Vercel)
+
+    - Database Access → Add User (ex: `admin` / senha forte)
+    - Network Access → Add IP (0.0.0.0/0 para Vercel)
 
 4. **Obter connection string**
-   ```
-   mongodb+srv://admin:<password>@math-learn-cluster.xxxxx.mongodb.net/?retryWrites=true&w=majority
-   ```
+    ```
+    mongodb+srv://admin:<password>@math-learn-cluster.xxxxx.mongodb.net/?retryWrites=true&w=majority
+    ```
+
+### 🤖 **Bonus: MCP Server Oficial do MongoDB**
+
+**Para usar com GitHub Copilot/Claude:**
+
+```json
+{
+  "mcpServers": {
+    "MongoDB": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mongodb-mcp-server",
+        "--connectionString",
+        "mongodb+srv://admin:senha@cluster.mongodb.net/math-learn",
+        "--readOnly"
+      ]
+    }
+  }
+}
+```
+
+**Funcionalidades do MCP:**
+- 🔍 Consultas naturais ao banco
+- 📊 Análise de dados inteligente  
+- 🛠️ Operações CRUD via IA
+- 📈 Estatísticas e métricas
+- 🔗 Integração direta com Atlas
 
 ### ✅ **Opção 2: Alternativas Gratuitas**
-- **Railway**: railway.app (PostgreSQL/MongoDB)
-- **PlanetScale**: planetscale.com (MySQL)
-- **Supabase**: supabase.com (PostgreSQL)
+
+-   **Railway**: railway.app (PostgreSQL/MongoDB)
+-   **PlanetScale**: planetscale.com (MySQL)
+-   **Supabase**: supabase.com (PostgreSQL)
 
 ### 🚀 **Deploy no Vercel**
 
 1. **Conectar repositório**
-   - Acesse [vercel.com](https://vercel.com)
-   - Import Git Repository → `osdeving/math-learn`
-   - Branch: `main`
+
+    - Acesse [vercel.com](https://vercel.com)
+    - Import Git Repository → `osdeving/math-learn`
+    - Branch: `main`
 
 2. **Configurar variáveis de ambiente**
-   ```bash
-   MONGODB_URI=mongodb+srv://admin:PASSWORD@cluster.xxxxx.mongodb.net/?retryWrites=true&w=majority
-   MONGODB_DB=math-learn
-   ```
+
+    ```bash
+    MONGODB_URI=mongodb+srv://admin:PASSWORD@cluster.xxxxx.mongodb.net/?retryWrites=true&w=majority
+    MONGODB_DB=math-learn
+    ```
 
 3. **Deploy automático**
-   - Cada push na `main` = deploy automático
-   - Build time: ~2-3 minutos
-   - URL: `https://math-learn-xxx.vercel.app`
+    - Cada push na `main` = deploy automático
+    - Build time: ~2-3 minutos
+    - URL: `https://math-learn-xxx.vercel.app`
 
 ### 🐳 **Deploy Local/Docker**
 
