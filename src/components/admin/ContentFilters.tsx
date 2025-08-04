@@ -60,13 +60,15 @@ export default function ContentFilters({ categories, basePath }: ContentFiltersP
     }, [debouncedSearch, updateURL]);
 
     const handleCategoryChange = (value: string) => {
-        setCategoryId(value);
-        updateURL({ categoryId: value });
+        const finalValue = value === "all" ? "" : value;
+        setCategoryId(finalValue);
+        updateURL({ categoryId: finalValue });
     };
 
     const handlePublishedChange = (value: string) => {
-        setPublished(value);
-        updateURL({ published: value });
+        const finalValue = value === "all" ? "" : value;
+        setPublished(finalValue);
+        updateURL({ published: finalValue });
     };
 
     const clearFilters = () => {
@@ -92,12 +94,12 @@ export default function ContentFilters({ categories, basePath }: ContentFiltersP
             </div>
 
             {/* Category Filter */}
-            <Select value={categoryId} onValueChange={handleCategoryChange}>
+            <Select value={categoryId || "all"} onValueChange={handleCategoryChange}>
                 <SelectTrigger className="w-full sm:w-48">
                     <SelectValue placeholder="Todas as categorias" />
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem value="">Todas as categorias</SelectItem>
+                    <SelectItem value="all">Todas as categorias</SelectItem>
                     {categories.map((category) => (
                         <SelectItem key={category._id} value={category._id}>
                             {category.name}
@@ -107,12 +109,12 @@ export default function ContentFilters({ categories, basePath }: ContentFiltersP
             </Select>
 
             {/* Status Filter */}
-            <Select value={published} onValueChange={handlePublishedChange}>
+            <Select value={published || "all"} onValueChange={handlePublishedChange}>
                 <SelectTrigger className="w-full sm:w-40">
                     <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem value="">Todos</SelectItem>
+                    <SelectItem value="all">Todos</SelectItem>
                     <SelectItem value="true">Publicado</SelectItem>
                     <SelectItem value="false">Rascunho</SelectItem>
                 </SelectContent>
