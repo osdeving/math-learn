@@ -71,6 +71,58 @@ export async function PUT(
     }
 }
 
+// PATCH /api/questions/[id] - Toggle publish/unpublish
+export async function PATCH(
+    request: NextRequest,
+    { params }: { params: { id: string } }
+) {
+    try {
+        await dbConnect();
+
+        const body = await request.json();
+        const { isPublished } = body;
+
+        if (typeof isPublished !== "boolean") {
+            return new Response(
+                JSON.stringify({ 
+                    success: false, 
+                    message: "isPublished must be a boolean" 
+                }),
+                {
+                    status: 400,
+                    headers: { "Content-Type": "application/json" },
+                }
+            );
+        }
+
+        const question = await Question.findByIdAndUpdate(
+            params.id,
+            { isPublished, updatedAt: new Date() },
+            { new: true, runValidators: true }
+        ).populate("categoryIds", "name slug");
+
+        if (!question) {
+            return new Response(
+                JSON.stringify({
+                    success: false,
+                    message: "Question not found",
+                }),
+                {
+                    status: 404,
+                    headers: { "Content-Type": "application/json" },
+                }
+            );
+        }
+
+        return successResponse(
+            question,
+            `Question ${isPublished ? "published" : "unpublished"} successfully`
+        );
+    } catch (error) {
+        return handleError(error);
+    }
+}
+
 // DELETE /api/questions/[id]
 export async function DELETE(
     request: NextRequest,

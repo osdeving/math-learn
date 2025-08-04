@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/toaster";
 import type { Metadata } from "next";
 import "./globals.css";
 
@@ -19,6 +20,7 @@ export default function RootLayout({
         <html lang="pt-BR">
             <body className="antialiased">
                 <div id="root">{children}</div>
+                <Toaster />
             </body>
         </html>
     );
