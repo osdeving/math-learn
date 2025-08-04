@@ -14,7 +14,10 @@ import { useState } from "react";
 
 // Dynamic import to avoid SSR issues with KaTeX
 const MarkdownRenderer = dynamic(
-    () => import("@/components/MarkdownRenderer").then(mod => ({ default: mod.MarkdownRenderer })),
+    () =>
+        import("@/components/MarkdownRenderer").then((mod) => ({
+            default: mod.MarkdownRenderer,
+        })),
     {
         ssr: false,
         loading: () => (
