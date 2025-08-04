@@ -42,7 +42,7 @@ export default function AdminPage() {
                     </CardContent>
                 </Card>
 
-                <Card className="opacity-50">
+                <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             📚 Teoria
@@ -56,8 +56,10 @@ export default function AdminPage() {
                             <p className="text-sm text-muted-foreground">
                                 Criar e editar conteúdo teórico com LaTeX
                             </p>
-                            <Button disabled className="w-full">
-                                Em Breve
+                            <Button asChild className="w-full">
+                                <Link href="/admin/theory">
+                                    Gerenciar Teorias
+                                </Link>
                             </Button>
                         </div>
                     </CardContent>
@@ -103,7 +105,7 @@ export default function AdminPage() {
                     </CardContent>
                 </Card>
 
-                <Card className="opacity-50">
+                <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             ❓ Questões
@@ -115,10 +117,12 @@ export default function AdminPage() {
                     <CardContent>
                         <div className="space-y-2">
                             <p className="text-sm text-muted-foreground">
-                                Criar questões de múltipla escolha
+                                Criar questões de múltipla escolha com 5 alternativas
                             </p>
-                            <Button disabled className="w-full">
-                                Em Breve
+                            <Button asChild className="w-full">
+                                <Link href="/admin/questions">
+                                    Gerenciar Questões
+                                </Link>
                             </Button>
                         </div>
                     </CardContent>
