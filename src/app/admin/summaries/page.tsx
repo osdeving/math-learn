@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 
 interface Summary {
     _id: string;
@@ -33,6 +33,14 @@ interface PaginationInfo {
 }
 
 export default function SummariesListPage() {
+    return (
+        <Suspense fallback={<div>Carregando...</div>}>
+            <SummariesListContent />
+        </Suspense>
+    );
+}
+
+function SummariesListContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const { toast } = useToast();

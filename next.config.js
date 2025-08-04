@@ -5,18 +5,18 @@ const nextConfig = {
         ignoreDuringBuilds: true,
     },
 
-    // Ignorar erros de TypeScript durante build (temporário) 
+    // Ignorar erros de TypeScript durante build (temporário)
     typescript: {
         ignoreBuildErrors: true,
     },
 
     // Configurações para Mongoose
-    serverExternalPackages: ['mongoose'],
-    
+    serverExternalPackages: ["mongoose"],
+
     images: {
         domains: ["localhost"],
     },
-    
+
     // Otimizações para performance
     compiler: {
         removeConsole: process.env.NODE_ENV === "production",

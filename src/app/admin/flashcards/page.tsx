@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 
 interface Flashcard {
     _id: string;
@@ -35,6 +35,14 @@ interface PaginationInfo {
 }
 
 export default function FlashcardsListPage() {
+    return (
+        <Suspense fallback={<div>Carregando...</div>}>
+            <FlashcardsContent />
+        </Suspense>
+    );
+}
+
+function FlashcardsContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const { toast } = useToast();
@@ -49,7 +57,7 @@ export default function FlashcardsListPage() {
     });
     const [isLoading, setIsLoading] = useState(true);
 
-    const fetchFlashcards = async () => {
+    const refreshFlashcards = async () => {
         try {
             setIsLoading(true);
             const params = new URLSearchParams(searchParams);
@@ -105,8 +113,49 @@ export default function FlashcardsListPage() {
     };
 
     useEffect(() => {
-        fetchFlashcards();
-    }, [searchParams]);
+        const fetchData = async () => {
+            try {
+                setIsLoading(true);
+                const params = new URLSearchParams(searchParams);
+                const response = await fetch(
+                    `/api/flashcards?${params.toString()}`
+                );
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch flashcards");
+                }
+
+                const data = await response.json();
+                // Adapt flashcards to ContentTable interface
+                const adaptedFlashcards = (data.data?.flashcards || []).map(
+                    (flashcard: any) => ({
+                        ...flashcard,
+                        title: flashcard.question, // Use question as title for ContentTable
+                    })
+                );
+                setFlashcards(adaptedFlashcards);
+                setPagination(
+                    data.data?.pagination || {
+                        current: 1,
+                        total: 1,
+                        count: 0,
+                        totalCount: 0,
+                    }
+                );
+            } catch (error) {
+                console.error("Error fetching flashcards:", error);
+                toast({
+                    title: "Erro",
+                    description: "Não foi possível carregar os flashcards.",
+                    variant: "destructive",
+                });
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [searchParams, toast]);
 
     useEffect(() => {
         fetchCategories();
@@ -129,7 +178,7 @@ export default function FlashcardsListPage() {
                 description: "Flashcard excluído com sucesso.",
             });
 
-            fetchFlashcards();
+            refreshFlashcards();
         } catch (error) {
             console.error("Error deleting flashcard:", error);
             toast({
@@ -161,7 +210,7 @@ export default function FlashcardsListPage() {
                 } com sucesso.`,
             });
 
-            fetchFlashcards();
+            refreshFlashcards();
         } catch (error) {
             console.error("Error updating flashcard:", error);
             toast({

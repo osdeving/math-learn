@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 
 interface Theory {
     _id: string;
@@ -33,6 +33,14 @@ interface PaginationInfo {
 }
 
 export default function TheoryListPage() {
+    return (
+        <Suspense fallback={<div>Carregando...</div>}>
+            <TheoryContent />
+        </Suspense>
+    );
+}
+
+function TheoryContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const { toast } = useToast();
@@ -47,7 +55,7 @@ export default function TheoryListPage() {
     });
     const [isLoading, setIsLoading] = useState(true);
 
-    const fetchTheories = async () => {
+    const refreshTheories = async () => {
         try {
             setIsLoading(true);
             const params = new URLSearchParams(searchParams);
@@ -94,8 +102,40 @@ export default function TheoryListPage() {
     };
 
     useEffect(() => {
-        fetchTheories();
-    }, [searchParams]);
+        const fetchData = async () => {
+            try {
+                setIsLoading(true);
+                const params = new URLSearchParams(searchParams);
+                const response = await fetch(`/api/theories?${params.toString()}`);
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch theories");
+                }
+
+                const data = await response.json();
+                setTheories(data.data?.theories || []);
+                setPagination(
+                    data.data?.pagination || {
+                        current: 1,
+                        total: 1,
+                        count: 0,
+                        totalCount: 0,
+                    }
+                );
+            } catch (error) {
+                console.error("Error fetching theories:", error);
+                toast({
+                    title: "Erro",
+                    description: "Não foi possível carregar as teorias.",
+                    variant: "destructive",
+                });
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [searchParams, toast]);
 
     useEffect(() => {
         fetchCategories();
@@ -118,7 +158,7 @@ export default function TheoryListPage() {
                 description: "Teoria excluída com sucesso.",
             });
 
-            fetchTheories();
+            refreshTheories();
         } catch (error) {
             console.error("Error deleting theory:", error);
             toast({
@@ -150,7 +190,7 @@ export default function TheoryListPage() {
                 } com sucesso.`,
             });
 
-            fetchTheories();
+            refreshTheories();
         } catch (error) {
             console.error("Error updating theory:", error);
             toast({
