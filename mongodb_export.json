@@ -1,0 +1,45 @@
+{
+  "success": true,
+  "message": "✅ MongoDB Atlas conectado com sucesso!",
+  "connection": {
+    "state": 1,
+    "host": "ac-pdsaevd-shard-00-00.bprwef1.mongodb.net",
+    "name": "math-learn"
+  },
+  "collections": {
+    "total": 5,
+    "found": [
+      "questions",
+      "theories",
+      "summaries",
+      "categories",
+      "flashcards"
+    ]
+  },
+  "stats": {
+    "categories": {
+      "count": 9,
+      "sample": "Álgebra"
+    },
+    "theories": {
+      "count": 7,
+      "sample": "Equações do Segundo Grau"
+    },
+    "questions": {
+      "count": 10,
+      "sample": "Qual é a raiz da equação $x^2 - 5x + 6 = 0$?"
+    },
+    "flashcards": {
+      "count": 10,
+      "sample": "O que é o discriminante de uma equação do segundo grau?"
+    },
+    "summaries": {
+      "count": 5,
+      "sample": "Resumo: Equações do 2º Grau"
+    }
+  },
+  "environment": {
+    "NODE_ENV": "development",
+    "timestamp": "2025-08-05T15:29:33.256Z"
+  }
+}

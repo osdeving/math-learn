@@ -1,6 +1,9 @@
 import { errorResponse, successResponse } from "@/lib/api-helpers";
 import { prisma } from "@/lib/prisma";
-import { categoryQuerySchema, categorySchema } from "@/lib/validations/category";
+import {
+    categoryQuerySchema,
+    categorySchema,
+} from "@/lib/validations/category";
 import { NextRequest } from "next/server";
 
 // GET /api/categories
@@ -23,15 +26,15 @@ export async function GET(request: NextRequest) {
 
         // Build where clause
         const where: any = {};
-        
+
         if (published !== undefined) {
             where.isPublished = published === "true";
         }
-        
+
         if (search) {
             where.OR = [
                 { name: { contains: search } },
-                { description: { contains: search } }
+                { description: { contains: search } },
             ];
         }
 
@@ -80,10 +83,13 @@ export async function POST(request: NextRequest) {
         const { name, description, slug, isPublished } = validationResult.data;
 
         // Generate slug if not provided
-        const finalSlug = slug || name.toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, '')
-            .replace(/\s+/g, '-')
-            .trim();
+        const finalSlug =
+            slug ||
+            name
+                .toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, "")
+                .replace(/\s+/g, "-")
+                .trim();
 
         const category = await prisma.category.create({
             data: {
@@ -94,16 +100,23 @@ export async function POST(request: NextRequest) {
             },
         });
 
-        return successResponse({ category }, "Category created successfully", 201);
+        return successResponse(
+            { category },
+            "Category created successfully",
+            201
+        );
     } catch (error: any) {
         console.error("Error creating category:", error);
-        
+
         // Handle unique constraint violations
-        if (error.code === 'P2002') {
+        if (error.code === "P2002") {
             const field = error.meta?.target?.[0];
-            return errorResponse(`${field === 'name' ? 'Name' : 'Slug'} already exists`, 409);
+            return errorResponse(
+                `${field === "name" ? "Name" : "Slug"} already exists`,
+                409
+            );
         }
-        
+
         return errorResponse("Failed to create category");
     }
 }

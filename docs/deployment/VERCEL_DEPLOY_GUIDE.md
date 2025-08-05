@@ -42,10 +42,29 @@ NODE_ENV=production
 USE_MEMORY_DB=false
 ```
 
+**🔧 IMPORTANTE: MongoDB Atlas IP Whitelist**
+
+No MongoDB Atlas, configure:
+
+1. **Network Access** → **IP Access List**
+2. **Add IP Address** → **Allow Access from Anywhere**
+3. **IP Address**: `0.0.0.0/0` (permite acesso do Vercel)
+4. **Confirm**: Salvar configuração
+
 #### 4. **Deploy**
 
 -   🚀 Clique em "Deploy"
 -   ⏳ Aguarde o build (2-3 minutos)
+
+#### 5. **⚠️ IMPORTANTE: Desabilitar Proteção**
+
+Se aparecer "Authentication Required" ao acessar:
+
+1. **Vá em**: Settings → Security
+2. **Procure**: "Password Protection" ou "Vercel Authentication"
+3. **Desabilite**: A proteção de acesso
+4. **Salve**: As configurações
+
 -   ✅ Acesse sua aplicação!
 
 ---

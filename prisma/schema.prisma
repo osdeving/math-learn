@@ -1,0 +1,169 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String
+  slug        String   @unique
+  isPublished Boolean  @default(false) @map("is_published")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  theories    TheoryCategory[]
+  summaries   SummaryCategory[]
+  flashcards  FlashcardCategory[]
+  questions   QuestionCategory[]
+
+  @@map("categories")
+}
+
+model Theory {
+  id          Int      @id @default(autoincrement())
+  title       String
+  content     String   // Markdown + LaTeX
+  isPublished Boolean  @default(false) @map("is_published")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  categories TheoryCategory[]
+  favorites  Favorite[]
+
+  @@map("theories")
+}
+
+model Summary {
+  id          Int      @id @default(autoincrement())
+  title       String
+  content     String   // max 1000 chars
+  isPublished Boolean  @default(false) @map("is_published")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  categories SummaryCategory[]
+  favorites  Favorite[]
+
+  @@map("summaries")
+}
+
+model Flashcard {
+  id          Int      @id @default(autoincrement())
+  question    String   // max 500 chars
+  answer      String   // max 1000 chars
+  isPublished Boolean  @default(false) @map("is_published")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  categories FlashcardCategory[]
+  favorites  Favorite[]
+
+  @@map("flashcards")
+}
+
+model Question {
+  id            Int      @id @default(autoincrement())
+  title         String
+  statement     String   // max 1000 chars
+  correctAnswer Int      @map("correct_answer") // 0-4 index
+  explanation   String   // max 1000 chars
+  isPublished   Boolean  @default(false) @map("is_published")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  alternatives Alternative[]
+  categories   QuestionCategory[]
+  favorites    Favorite[]
+
+  @@map("questions")
+}
+
+model Alternative {
+  id         Int     @id @default(autoincrement())
+  text       String  // max 200 chars
+  isCorrect  Boolean @map("is_correct")
+  questionId Int     @map("question_id")
+
+  // Relations
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@map("alternatives")
+}
+
+// Junction tables for many-to-many relationships
+model TheoryCategory {
+  theoryId   Int @map("theory_id")
+  categoryId Int @map("category_id")
+
+  theory   Theory   @relation(fields: [theoryId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([theoryId, categoryId])
+  @@map("theory_categories")
+}
+
+model SummaryCategory {
+  summaryId  Int @map("summary_id")
+  categoryId Int @map("category_id")
+
+  summary  Summary  @relation(fields: [summaryId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([summaryId, categoryId])
+  @@map("summary_categories")
+}
+
+model FlashcardCategory {
+  flashcardId Int @map("flashcard_id")
+  categoryId  Int @map("category_id")
+
+  flashcard Flashcard @relation(fields: [flashcardId], references: [id], onDelete: Cascade)
+  category  Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([flashcardId, categoryId])
+  @@map("flashcard_categories")
+}
+
+model QuestionCategory {
+  questionId Int @map("question_id")
+  categoryId Int @map("category_id")
+
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([questionId, categoryId])
+  @@map("question_categories")
+}
+
+model Favorite {
+  id          Int      @id @default(autoincrement())
+  userId      String   @map("user_id")
+  contentType String   @map("content_type") // 'theory', 'summary', 'flashcard', 'question'
+  contentId   Int      @map("content_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  theory    Theory?    @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  summary   Summary?   @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  flashcard Flashcard? @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  question  Question?  @relation(fields: [contentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, contentId, contentType])
+  @@index([userId, contentType])
+  @@index([userId, createdAt])
+  @@map("favorites")
+}
